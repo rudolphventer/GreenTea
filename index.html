@@ -2,39 +2,52 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <script src="gui.js"></script>
-    <title>Hello World!</title>
-    <!-- https://electronjs.org/docs/tutorial/security#csp-meta-tag -->
+    <title>GreenTea</title>
     <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
-    <style type="text/css">
-        #editor { 
-            position: relative;
-            height: 90vh;
-            width: 100%;
-        }
-    </style>
+    <script src="./src/jquery-3.4.1.min.js"></script>
+    <script src="./src/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="./src/bootstrap.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="main.css" crossorigin="anonymous">
+    <script src="./src/src/ace.js" type="text/javascript" charset="utf-8"></script>
+    <script src="gui.js"></script>
+    
+    
   
 </head>
-    <body onload="start()" id="Window">
-
-        <div id="drag-file" ondrop="dropOnSource(event)">
-            <p>Drag your files here</p>
-        </div>
-
-        <input class="upload" type="file" id="Filedata" capture="" name="Filedata" multiple="" onchange="loadFileAsText()" accept="All">
-
-        <div>
-            <div id="editor">function foo(items) {
-                var x = "All this is syntax highlighted";
-                return x;
-            }</div> 
+<body onload="start()" id="Window">
+    <script src="./src/mousetrap.min.js" type="text/javascript" charset="utf-8"></script>
+    <script>
+        (function () {
+            var holder = document.getElementById('Window');
+    
+            holder.ondragover = () => {
+                return false;
+            };
+    
+            holder.ondragleave = () => {
+                return false;
+            };
+    
+            holder.ondragend = () => {
+                return false;
+            };
+    
+            holder.ondrop = (e) => {
+                e.preventDefault();
+    
+                for (let f of e.dataTransfer.files) {
+                    openFile(f.path);
+                }
                 
-            <script src="./src/src/ace.js" type="text/javascript" charset="utf-8"></script>
-            <script>
-                var editor = ace.edit("editor");
-                editor.setTheme("ace/theme/monokai");
-                editor.session.setMode("ace/mode/javascript");
-            </script>
-        </div>
+                return false;
+            };
+        })();
+    </script>
+    <!--<input class="upload" type="file" id="Filedata" capture="" name="Filedata" multiple="" onchange="loadFileAsText()" accept="All"> -->
+    <div class="workspace">
+    <div id="editor"></div>
+    <textarea class="terminal" id="terminal" cols="40" rows="5"></textarea>
+    <div id="snackbar"></div>
+    </div>
 </body>
 </html>

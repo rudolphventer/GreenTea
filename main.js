@@ -5,6 +5,7 @@ const path=require('path')
 function createWindow () {
   // Create the browser window.
   const win = new BrowserWindow({
+    title: "GreenTea",
     width: 800,
     height: 600,
     webPreferences: {
@@ -22,7 +23,9 @@ function createWindow () {
   }))
 
   // Open the DevTools.
-  win.webContents.openDevTools()
+  //win.webContents.openDevTools()
+
+  
 }
 
 
@@ -51,4 +54,3 @@ app.on('activate', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
-
