@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, Menu } = require('electron')
 const url=require('url')
 const path=require('path')
 
@@ -13,6 +13,41 @@ function createWindow () {
     }
   })
 
+  win.on('close', function(e){
+    e.preventDefault();
+    win.webContents.executeJavaScript('compareSaveStateUpToDate()')
+    .then(result =>
+      {
+        console.log(result)
+        if(!result && result !== undefined)
+        {
+          var choice = require('electron').dialog.showMessageBox(win,
+            {
+              type: 'question',
+              buttons: ['Yes', 'No'],
+              title: 'Confirm',
+              message: 'You have unsaved changes, are you sure you want to quit?'
+            });
+          choice.then(function(res){
+              // 0 for Yes
+              if(res.response== 0){
+                win.destroy()
+              }
+              // 1 for No
+              if(res.response== 1){
+
+              }
+            }
+          )
+        }
+        else
+        {
+          win.destroy()
+        }
+      })
+    .catch(err => console.log("error",err))
+    });
+
   // and load the index.html of the app.
   win.loadFile('index.html')
 
@@ -23,8 +58,66 @@ function createWindow () {
   }))
 
   // Open the DevTools.
-  //win.webContents.openDevTools()
+  win.webContents.openDevTools()
 
+  var menu = Menu.buildFromTemplate([
+    {
+        label: 'File',
+            submenu: [
+              {
+                label:'Save',
+                click() { 
+                  win.webContents.executeJavaScript('saveFile()')
+                  .then(result => console.log("success"))
+                  .catch(console.log("Error"))
+                },
+                accelerator: 'CmdOrCtrl+S'
+            },
+            {
+              label:'Save As',
+              click() { 
+                win.webContents.executeJavaScript('saveNewFile()')
+                .then(result => console.log("success"))
+                .catch(console.log("Error"))
+              },
+              accelerator: 'CmdOrCtrl+Shift+S'
+            },
+            {
+              label:'New File',
+              click() { 
+                win.webContents.executeJavaScript('createNewFile()')
+                .then(result => console.log("success"))
+                .catch(console.log("Error"))
+              },
+              accelerator: 'CmdOrCtrl+Shift+N'
+            },
+            {
+              label:'Open File',
+              click() { 
+                win.webContents.executeJavaScript('openNewFileUI()')
+                .then(result => console.log("success"))
+                .catch(console.log("Error"))
+              },
+              accelerator: 'CmdOrCtrl+Shift+O'
+            },
+            {
+              label:'Test',
+              click() { 
+                win.webContents.executeJavaScript('compareSaveStateUpToDate()')
+                .then(result => console.log("success"))
+                .catch(console.log("Error"))
+              }
+            },
+            {
+                label:'Exit', 
+                click() { 
+                    app.quit() 
+                } 
+            }
+        ]
+    }
+  ])
+Menu.setApplicationMenu(menu); 
   
 }
 

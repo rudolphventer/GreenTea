@@ -9,6 +9,10 @@ body
     background-color: #181818;
 }
 
+textarea {
+  resize: none;
+}
+
 .workspace
 {
     height: 100%;
