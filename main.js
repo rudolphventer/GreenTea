@@ -6,11 +6,14 @@ function createWindow () {
   // Create the browser window.
   const win = new BrowserWindow({
     title: "GreenTea",
+    backgroundColor: "#181818",
     width: 800,
     height: 600,
     webPreferences: {
       nodeIntegration: true
-    }
+    },
+    icon: "icon.png",
+    frame: true
   })
 
   win.on('close', function(e){
@@ -58,7 +61,7 @@ function createWindow () {
   }))
 
   // Open the DevTools.
-  win.webContents.openDevTools()
+  //win.webContents.openDevTools()
 
   var menu = Menu.buildFromTemplate([
     {
@@ -115,7 +118,51 @@ function createWindow () {
                 } 
             }
         ]
-    }
+    },
+    {
+      label: 'Edit',
+          submenu: [
+            {
+              label:'TEMP'
+          }
+      ]
+    },
+    {
+      label: 'View',
+          submenu: [
+            {
+              label:'Toggle Terminal',
+              click() { 
+                win.webContents.executeJavaScript('toggleTerminal()')
+              },
+              accelerator: 'CmdOrCtrl+T'
+          }
+      ]
+    },
+    {
+      label: 'Language',
+          submenu: [
+            {
+              label:'TEMP'
+          }
+      ]
+    },
+    {
+      label: 'Theme',
+          submenu: [
+            {
+              label:'TEMP'
+          }
+      ]
+    },
+    {
+      label: 'Help',
+          submenu: [
+            {
+              label:'TEMP'
+          }
+      ]
+    },
   ])
 Menu.setApplicationMenu(menu); 
   

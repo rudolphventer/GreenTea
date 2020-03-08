@@ -5,7 +5,8 @@
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "electron ."
+    "start": "electron .",
+    "build": "electron-packager . --out=dist/win --platform=win32 --arch=x64 --icon=./icon.ico --asar=true --overwrite"
   },
   "author": "",
   "license": "ISC",

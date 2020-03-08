@@ -1,11 +1,13 @@
 var editor;
 var currentFile = undefined;
 var language = "txt";
+var terminalVisible = true;
 
 function start()
 {
   initEditor();
   showNotification("Drag a file here to start editing")
+  document.getElementById("terminal").setValue("Microsoft Windows [Version 10.0.18362.657](c)\n2019 Microsoft Corporation. All rights reserved.\nC:\\Users\\Rudolph>")
 }
 
 function initEditor()
@@ -14,6 +16,22 @@ function initEditor()
   editor.setTheme("ace/theme/monokai");
   editor.session.setMode("ace/mode/text");
   editor.setShowPrintMargin(false);
+}
+
+function toggleTerminal()
+{
+  if(terminalVisible)
+  {
+    document.getElementById("terminal").style.display = "none";
+    document.getElementById("editor").style.height = "100vh";
+    terminalVisible = false;
+  }
+  else
+  {
+    document.getElementById("terminal").style.display = "initial";
+    document.getElementById("editor").style.height = "80vh";
+    terminalVisible = true;
+  }
 }
 
 function openFile(dir)
