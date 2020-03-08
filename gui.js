@@ -8,6 +8,7 @@ function start()
   initEditor();
   showNotification("Drag a file here to start editing")
   //document.getElementById("terminal").textContent = "Microsoft Windows [Version 10.0.18362.657](c)\n2019 Microsoft Corporation. All rights reserved.\nC:\\Users\\Rudolph>"
+
 }
 
 function initEditor()
@@ -19,6 +20,11 @@ function initEditor()
   editor.setOptions({
     fontSize: "11pt"
   });
+}
+
+function setTheme(theme)
+{
+  editor.setTheme("ace/theme/"+theme);
 }
 
 function toggleTerminal()
