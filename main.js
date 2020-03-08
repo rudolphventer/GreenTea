@@ -68,6 +68,24 @@ function createWindow () {
         label: 'File',
             submenu: [
               {
+                label:'New File',
+                click() { 
+                  win.webContents.executeJavaScript('createNewFile()')
+                  .then(result => console.log("success"))
+                  .catch(console.log("Error"))
+                },
+                accelerator: 'CmdOrCtrl+Shift+N'
+              },
+              {
+                label:'Open File',
+                click() { 
+                  win.webContents.executeJavaScript('openNewFileUI()')
+                  .then(result => console.log("success"))
+                  .catch(console.log("Error"))
+                },
+                accelerator: 'CmdOrCtrl+Shift+O'
+              },
+              {
                 label:'Save',
                 click() { 
                   win.webContents.executeJavaScript('saveFile()')
@@ -84,24 +102,6 @@ function createWindow () {
                 .catch(console.log("Error"))
               },
               accelerator: 'CmdOrCtrl+Shift+S'
-            },
-            {
-              label:'New File',
-              click() { 
-                win.webContents.executeJavaScript('createNewFile()')
-                .then(result => console.log("success"))
-                .catch(console.log("Error"))
-              },
-              accelerator: 'CmdOrCtrl+Shift+N'
-            },
-            {
-              label:'Open File',
-              click() { 
-                win.webContents.executeJavaScript('openNewFileUI()')
-                .then(result => console.log("success"))
-                .catch(console.log("Error"))
-              },
-              accelerator: 'CmdOrCtrl+Shift+O'
             },
             {
               label:'Test',

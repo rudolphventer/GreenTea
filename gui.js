@@ -7,7 +7,7 @@ function start()
 {
   initEditor();
   showNotification("Drag a file here to start editing")
-  document.getElementById("terminal").setValue("Microsoft Windows [Version 10.0.18362.657](c)\n2019 Microsoft Corporation. All rights reserved.\nC:\\Users\\Rudolph>")
+  //document.getElementById("terminal").textContent = "Microsoft Windows [Version 10.0.18362.657](c)\n2019 Microsoft Corporation. All rights reserved.\nC:\\Users\\Rudolph>"
 }
 
 function initEditor()
@@ -16,6 +16,9 @@ function initEditor()
   editor.setTheme("ace/theme/monokai");
   editor.session.setMode("ace/mode/text");
   editor.setShowPrintMargin(false);
+  editor.setOptions({
+    fontSize: "11pt"
+  });
 }
 
 function toggleTerminal()
