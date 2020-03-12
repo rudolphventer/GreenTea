@@ -3,6 +3,7 @@ var currentFile = undefined;
 var language = "txt";
 var terminalVisible = true;
 var recentFiles = []
+var openLastFile = true;
 function start()
 {
   initEditor();
@@ -16,12 +17,11 @@ function start()
 
   recentFiles.map(filepath => console.log(filepath))
 
-  if(readFromLocalStorage("recentFiles") != null)
+  if(readFromLocalStorage("recentFiles") != null && openLastFile)
   {
-    recentFiles.push(JSON.parse(readFromLocalStorage("recentFiles")));
-    //problem occurs here!
-    console.log(recentFiles[0])
-    openFile(recentFiles[0])
+    JSON.parse(readFromLocalStorage("recentFiles")).map(value => recentFiles.push(value))
+    console.log(recentFiles[recentFiles.length-1])
+    openFile(recentFiles[recentFiles.length-1])
   }
 }
 
@@ -261,6 +261,7 @@ function createNewFile()
     showNotification("New file started")
     currentFile = undefined;
     language = "txt";
+    detectLanguage();
     updateState();
   }
   catch (err)
@@ -419,6 +420,15 @@ function openNewFileUI()
 
 function addToRecentFiles(path)
 {
+  var index = recentFiles.indexOf(path);
+ 
+  if (index > -1) {
+     recentFiles.splice(index, 1);
+  }
     recentFiles.push(path)
+  if(recentFiles.length > 8)
+  {
+    recentFiles.shift();
+  }
     saveToLocalStorage("recentFiles", JSON.stringify(recentFiles));
 }

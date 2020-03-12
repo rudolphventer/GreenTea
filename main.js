@@ -348,7 +348,7 @@ template.push(
             .then(result => console.log("success"))
             .catch(console.log("Error"))
           },
-          accelerator: 'CmdOrCtrl+Shift+K'
+          accelerator: 'CmdOrCtrl+Shift+['
         },
         {
           label:'Decrease Editor Text Size',
@@ -357,7 +357,7 @@ template.push(
             .then(result => console.log("success"))
             .catch(console.log("Error"))
           },
-          accelerator: 'CmdOrCtrl+Shift+J'
+          accelerator: 'CmdOrCtrl+Shift+]'
         }
   ]
 },
