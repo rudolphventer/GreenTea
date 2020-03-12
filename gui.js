@@ -2,29 +2,136 @@ var editor;
 var currentFile = undefined;
 var language = "txt";
 var terminalVisible = true;
-
+var recentFiles = []
 function start()
 {
   initEditor();
   showNotification("Drag a file here to start editing")
   //document.getElementById("terminal").textContent = "Microsoft Windows [Version 10.0.18362.657](c)\n2019 Microsoft Corporation. All rights reserved.\nC:\\Users\\Rudolph>"
 
+  ///////////////Until terminal is implemented
+  document.getElementById("terminal").style.display = "none";
+  document.getElementById("editor").style.height = "100vh";
+  //////////////////////////////////////////////
+
+  recentFiles.map(filepath => console.log(filepath))
+
+  if(readFromLocalStorage("recentFiles") != null)
+  {
+    recentFiles.push(JSON.parse(readFromLocalStorage("recentFiles")));
+    //problem occurs here!
+    console.log(recentFiles[0])
+    openFile(recentFiles[0])
+  }
 }
 
 function initEditor()
 {
   editor = ace.edit("editor");
-  editor.setTheme("ace/theme/monokai");
+  
+  console.log("theme: ",localStorage.getItem("currentTheme"))
+  if(readFromLocalStorage("currentTheme") != null)
+  {
+    setTheme(readFromLocalStorage("currentTheme"))
+    
+  }
+  else
+  {
+    editor.setTheme("ace/theme/monokai");
+  }
+
   editor.session.setMode("ace/mode/text");
   editor.setShowPrintMargin(false);
-  editor.setOptions({
-    fontSize: "11pt"
-  });
+
+
+  if(readFromLocalStorage(editorTextSize) != null)
+  {
+    editorTextSize(readFromLocalStorage(editorTextSize))
+  }
+  else
+  {
+    editor.setOptions({
+      fontSize: "11pt"
+    });
+  }
 }
 
 function setTheme(theme)
 {
   editor.setTheme("ace/theme/"+theme);
+  saveToLocalStorage("currentTheme", theme);
+}
+
+function setMode(mode)
+{
+  editor.session.setMode("ace/mode/"+mode);
+  updateState();
+}
+
+function editorTextSize(sign)
+{
+  if(sign == "+")
+  {
+    var size = parseInt(editor.getFontSize().slice(0, -2)); 
+    size += 2;
+    showNotification(size+"pt")
+    editor.setOptions({
+      fontSize: size+"pt"
+    });
+    saveToLocalStorage("editorTextSize",size);
+  }
+  else
+  if(sign == "-")
+  {
+    var size = parseInt(editor.getFontSize().slice(0, -2)); 
+    size = size-2;
+    showNotification(size+"pt")
+    if(size > 3)
+    {
+      editor.setOptions({
+        fontSize: size+"pt"
+      });
+      saveToLocalStorage("editorTextSize",size);
+    }
+  }
+  else
+  if(sign > 0)
+  {
+    showNotification(size+"pt")
+    if(size > 3)
+    {
+      editor.setOptions({
+        fontSize: size+"pt"
+      });
+      saveToLocalStorage("editorTextSize",size);
+    }
+  }
+  else
+  {
+    showNotification("Invalid size")
+  }
+}
+
+function saveToLocalStorage(name, value)
+{
+  try{
+    localStorage.setItem(name, value);
+  }
+  catch (err)
+  {
+    console.log(err);
+  }
+}
+function readFromLocalStorage(name)
+{
+  try
+  {
+  return localStorage.getItem(name);
+  }
+  catch (err)
+  {
+    console.log(err);
+  }
 }
 
 function toggleTerminal()
@@ -50,12 +157,12 @@ function openFile(dir)
     currentFile = dir
     getContents(dir)
     .then(result => {
-      editor.setValue(result)
+      editor.setValue(result, 1)
       showNotification(currentFile);
       language = currentFile.split('.').pop();
       detectLanguage();
       updateState();
-
+      addToRecentFiles(dir)
     })
   }
   catch (err)
@@ -81,10 +188,18 @@ function getContents(dir)
 
 function updateState()
 {
-  detectLanguage();
-  var mode = editor.session.$modeId;
-  mode = mode.substr(mode.lastIndexOf('/') + 1);
-  document.title = "GreenTea - "+currentFile + " - " + mode;
+  if(currentFile != undefined)
+  {
+    var mode = editor.session.$modeId;
+    mode = mode.substr(mode.lastIndexOf('/') + 1);
+    document.title = "GreenTea - "+currentFile + " - " + mode;
+  }
+  else
+  {
+    var mode = editor.session.$modeId;
+    mode = mode.substr(mode.lastIndexOf('/') + 1);
+    document.title = "GreenTea - "+"New File" + " - " + mode;
+  }
 }
 
 function saveFile()
@@ -167,61 +282,61 @@ function detectLanguage()
 {
   switch(language) {
     case "js":
-      editor.session.setMode("ace/mode/javascript");
+      setMode("javascript");
       break;
       case "java":
-      editor.session.setMode("ace/mode/java");
+      setMode("java");
       break;
       case "html":
-      editor.session.setMode("ace/mode/html");
+        setMode("html");
       break;
       case "py":
-      editor.session.setMode("ace/mode/python");
+        setMode("python");
       break;
       case "css":
-      editor.session.setMode("ace/mode/css");
+        setMode("css");
       break;
       case "cs":
-      editor.session.setMode("ace/mode/csharp");
+        setMode("csharp");
       break;
       case "cpp":
-      editor.session.setMode("ace/mode/c_cpp");
+        setMode("c_cpp");
       break;
       case "c":
-      editor.session.setMode("ace/mode/c");
+        setMode("c");
       break;
       case "go":
-      editor.session.setMode("ace/mode/golang");
+        setMode("golang");
       break;
       case "json":
-      editor.session.setMode("ace/mode/json");
+        setMode("json");
       break;
       case "lua":
-      editor.session.setMode("ace/mode/lua");
+        setMode("lua");
       break;
       case "md":
-      editor.session.setMode("ace/mode/markdown");
+        setMode("markdown");
       break;
       case "txt":
-      editor.session.setMode("ace/mode/text");
+        setMode("text");
       break;
       case "sql":
-      editor.session.setMode("ace/mode/sql");
+        setMode("sql");
       break;
       case "php":
-      editor.session.setMode("ace/mode/php");
+        setMode("php");
       break;
       case "":
-      editor.session.setMode("ace/mode/text");
+        setMode("text");
       break;
       case "xml":
-      editor.session.setMode("ace/mode/xml");
+        setMode("xml");
       break;
       case "py":
-      editor.session.setMode("ace/mode/python");
+        setMode("python");
       break;
     default:
-      editor.session.setMode("ace/mode/text");
+      setMode("text");
   } 
 }
 
@@ -264,11 +379,18 @@ function openNewFileUI()
   const {remote} = require('electron'),
   dialog = remote.dialog,
   WIN = remote.getCurrentWindow();  
-
+  var lastfilepath = ""
+  try{
+    lastfilepath = (recentFiles[recentFiles.length-1]).substring(0, (recentFiles[recentFiles.length-1]).lastIndexOf("/"))
+  }
+  catch (err)
+  {
+    
+  }
 
   let options = {
     title : "Open file - GreenTea", 
-    defaultPath : "C:\\",
+    defaultPath : lastfilepath,
     buttonLabel : "Open",
     filters :[{name: 'All Files', extensions: ['*']}],
     properties: ['openFile']
@@ -293,4 +415,10 @@ function openNewFileUI()
     })
   
 
+}
+
+function addToRecentFiles(path)
+{
+    recentFiles.push(path)
+    saveToLocalStorage("recentFiles", JSON.stringify(recentFiles));
 }

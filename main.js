@@ -40,6 +40,175 @@ const themelist = [
 "vibrant_ink",
 ]
 
+const modelist = [
+"abap",
+"abc",
+"actionscript",
+"ada",
+"apache_conf",
+"apex",
+"applescript",
+"aql",
+"asciidoc",
+"asl",
+"assembly_x86",
+"autohotkey",
+"batchfile",
+"bro",
+"c9search",
+"cirru",
+"clojure",
+"cobol",
+"coffee",
+"coldfusion",
+"crystal",
+"csharp",
+"csound_document",
+"csound_orchestra",
+"csound_score",
+"csp",
+"css",
+"curly",
+"c_cpp",
+"d",
+"dart",
+"diff",
+"django",
+"dockerfile",
+"dot",
+"drools",
+"edifact",
+"eiffel",
+"elixir",
+"elm",
+"erlang",
+"forth",
+"fortran",
+"fsharp",
+"fsl",
+"ftl",
+"gcode",
+"gherkin",
+"gitignore",
+"glsl",
+"gobstones",
+"golang",
+"graphqlschema",
+"groovy",
+"haml",
+"handlebars",
+"haskell",
+"haskell_cabal",
+"haxe",
+"on",
+"html",
+"html_elixir",
+"html_ruby",
+"ini",
+"io",
+"jack",
+"jade",
+"java",
+"javascript",
+"modeon",
+"modeon5",
+"modeoniq",
+"modep",
+"modesm",
+"modex",
+"julia",
+"kotlin",
+"latex",
+"less",
+"liquid",
+"lisp",
+"livescript",
+"logiql",
+"logtalk",
+"lsl",
+"lua",
+"luapage",
+"lucene",
+"makefile",
+"markdown",
+"mask",
+"matlab",
+"maze",
+"mel",
+"mixal",
+"mushcode",
+"mysql",
+"nginx",
+"nim",
+"nix",
+"nsis",
+"nunjucks",
+"objectivec",
+"ocaml",
+"pascal",
+"perl",
+"perl6",
+"pgsql",
+"php",
+"php_laravel_blade",
+"pig",
+"plain_text",
+"powershell",
+"praat",
+"prolog",
+"properties",
+"protobuf",
+"puppet",
+"python",
+"r",
+"razor",
+"rdoc",
+"red",
+"redshift",
+"rhtml",
+"rst",
+"ruby",
+"rust",
+"sass",
+"scad",
+"scala",
+"scheme",
+"scss",
+"sh",
+"slim",
+"smarty",
+"snippets",
+"soy_template",
+"space",
+"sparql",
+"sql",
+"sqlserver",
+"stylus",
+"svg",
+"swift",
+"tcl",
+"terraform",
+"tex",
+"text",
+"textile",
+"toml",
+"tsx",
+"turtle",
+"twig",
+"typescript",
+"vala",
+"vbscript",
+"velocity",
+"verilog",
+"vhdl",
+"visualforce",
+"wollok",
+"xml",
+"xquery",
+"yaml",
+"zeek"
+]
+
 function createWindow () {
   // Create the browser window.
   const win = new BrowserWindow({
@@ -124,6 +293,11 @@ template.push(
             accelerator: 'CmdOrCtrl+Shift+O'
           },
           {
+            label:'Recent Files',
+            submenu: []
+          },
+          { type: 'separator' },
+          {
             label:'Save',
             click() { 
               win.webContents.executeJavaScript('saveFile()')
@@ -132,7 +306,7 @@ template.push(
             },
             accelerator: 'CmdOrCtrl+S'
         },
-        {
+        { 
           label:'Save As',
           click() { 
             win.webContents.executeJavaScript('saveNewFile()')
@@ -141,14 +315,7 @@ template.push(
           },
           accelerator: 'CmdOrCtrl+Shift+S'
         },
-        {
-          label:'Test',
-          click() { 
-            win.webContents.executeJavaScript('compareSaveStateUpToDate()')
-            .then(result => console.log("success"))
-            .catch(console.log("Error"))
-          }
-        },
+        { type: 'separator' },
         {
             label:'Exit', 
             click() { 
@@ -172,6 +339,29 @@ template.push(
   ]
 },
 {
+  label: 'Text',
+      submenu: [
+        {
+          label:'Increase Editor Text Size',
+          click() { 
+            win.webContents.executeJavaScript('editorTextSize("+")')
+            .then(result => console.log("success"))
+            .catch(console.log("Error"))
+          },
+          accelerator: 'CmdOrCtrl+Shift+K'
+        },
+        {
+          label:'Decrease Editor Text Size',
+          click() { 
+            win.webContents.executeJavaScript('editorTextSize("-")')
+            .then(result => console.log("success"))
+            .catch(console.log("Error"))
+          },
+          accelerator: 'CmdOrCtrl+Shift+J'
+        }
+  ]
+},
+{
   label: 'View',
       submenu: [
         {
@@ -179,7 +369,8 @@ template.push(
           click() { 
             win.webContents.executeJavaScript('toggleTerminal()')
           },
-          accelerator: 'CmdOrCtrl+T'
+          accelerator: 'CmdOrCtrl+T',
+          enabled: false
       },
       { role: 'reload' },
         { role: 'forcereload' },
@@ -195,18 +386,11 @@ template.push(
 {
   label: 'Language',
       submenu: [
-        {
-          label:'TEMP'
-      }
   ]
 },
 {
   label: 'Theme',
-      submenu: [
-        {
-          label:'TEMP'
-      }
-  ]
+      submenu: []
 },
 {
   label: 'Help',
@@ -218,24 +402,9 @@ template.push(
 }
 )
 
-/*for(var i = 0; i<themelist.length;i++)
-  {
-    template[4].submenu.push(
-      {
-        label:themelist[i],
-        click() { 
-          var name = themelist[i]
-          win.webContents.executeJavaScript('setTheme(' + 'themelist[i]' + ')')
-          .then(result => console.log("success"))
-          .catch(console.log("Error"))
-        }
-      }
-  )
-  }*/
-
   themelist.map( theme =>
   {
-    template[4].submenu.push(
+    template[5].submenu.push(
       {
         label:theme,
         click() { 
@@ -248,6 +417,22 @@ template.push(
       }
   )
   })
+
+  modelist.map( mode =>
+    {
+      template[4].submenu.push(
+        {
+          label:mode,
+          click() { 
+            console.log(mode)
+            var newMode = mode
+            win.webContents.executeJavaScript('setMode("'+newMode+'")')
+            .then(result => console.log("success"))
+            .catch(console.log("Error"))
+          }
+        }
+    )
+    })
 
 console.log(template[4].submenu[1].click)
 menu2 = Menu.buildFromTemplate(template)
