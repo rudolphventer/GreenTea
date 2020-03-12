@@ -432,3 +432,21 @@ function addToRecentFiles(path)
   }
     saveToLocalStorage("recentFiles", JSON.stringify(recentFiles));
 }
+
+const { remote } = require('electron')
+    const { Menu, MenuItem } = remote
+    
+    const menu = new Menu()
+    //menu.append(new MenuItem({ role: "copy", click() { console.log('item 1 clicked') } }))
+    menu.append(new MenuItem({ role: "paste"}))
+    menu.append(new MenuItem({ role: "copy"}))
+    menu.append(new MenuItem({ role: "cut"}))
+    menu.append(new MenuItem({ role: "undo"}))
+    menu.append(new MenuItem({ role: "redo"}))
+    menu.append(new MenuItem({ type: 'separator' }))
+    menu.append(new MenuItem({ label: 'MenuItem2', type: 'checkbox', checked: true }))
+    
+    window.addEventListener('contextmenu', (e) => {
+      e.preventDefault()
+      menu.popup({ window: remote.getCurrentWindow() })
+    }, false)
