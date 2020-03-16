@@ -31,7 +31,9 @@ A simple, minimalist code editor written in Javascript, HTML and CSS using Elect
 
 ## --⚙--Enhancements/Improvements--⚙--
 
-  
+
+
+- Improve popup notification aesthetics
 
 - Improve add language indicator
 
