@@ -208,7 +208,6 @@ const modelist = [
 "yaml",
 "zeek"
 ]
-
 function createWindow () {
   // Create the browser window.
   const win = new BrowserWindow({
@@ -223,12 +222,36 @@ function createWindow () {
     frame: true
   })
 
+  const { ipcMain } = require('electron')
+  var fs = require('fs');
+
+  // read the file and send data to the render process
+  ipcMain.on('get-file-data', function(event) {
+    var data = null;
+    if (process.platform == 'win32' && process.argv.length >= 2) {
+      var openFilePath = process.argv[1];
+      data = openFilePath;
+    }
+    event.returnValue = data;
+  });
+
+  //The main process part of talking to the renderer
+  /*
+  ipcMain.on('asynchronous-message', (event, arg) => {
+    console.log(arg) // prints "ping"
+    event.reply('asynchronous-reply', 'pong')
+  })
+
+  ipcMain.on('synchronous-message', (event, arg) => {
+    console.log(arg) // prints "ping"
+    event.returnValue = 'pong'
+  })*/
+
   win.on('close', function(e){
     e.preventDefault();
     win.webContents.executeJavaScript('compareSaveStateUpToDate()')
     .then(result =>
       {
-        console.log(result)
         if(!result && result !== undefined)
         {
           var choice = require('electron').dialog.showMessageBox(win,

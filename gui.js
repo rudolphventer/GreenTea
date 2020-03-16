@@ -1,9 +1,10 @@
 var editor;
+const { ipcRenderer } = require('electron')
 var currentFile = undefined;
 var language = "txt";
 var terminalVisible = true;
 var recentFiles = []
-var openLastFile = true;
+var openLast = true;
 function start()
 {
   initEditor();
@@ -15,16 +16,30 @@ function start()
   document.getElementById("editor").style.height = "100vh";
   //////////////////////////////////////////////
 
+  //Here we listen for files being opened in the program, so stuff that is associated and uses greentea as the "default" program to open them or when you right click and click "Open with"
+  var data = ipcRenderer.sendSync('get-file-data');
+  if (data ===  null) {
+    openLastFile()
+  } else {
+    openFile(data);
+  }
+  //here we send lsit of recent files to main in order to create the list in the menu
+  //ipcRenderer.send('asynchronous-message', 'ping')
+  
+}
+
+
+function openLastFile()
+{
   recentFiles.map(filepath => console.log(filepath))
 
-  if(readFromLocalStorage("recentFiles") != null && openLastFile)
+  if(readFromLocalStorage("recentFiles") != null && openLast)
   {
     JSON.parse(readFromLocalStorage("recentFiles")).map(value => recentFiles.push(value))
     console.log(recentFiles[recentFiles.length-1])
     openFile(recentFiles[recentFiles.length-1])
   }
 }
-
 function initEditor()
 {
   editor = ace.edit("editor");
@@ -122,6 +137,7 @@ function saveToLocalStorage(name, value)
     console.log(err);
   }
 }
+
 function readFromLocalStorage(name)
 {
   try
@@ -354,12 +370,12 @@ function compareSaveStateUpToDate()
         {
           if(result == editor.getValue())
         {
-          console.log("Files are the same")
+          //console.log("Files are the same")
           return true;
         }
         else
         {
-          console.log("Files are not the same")
+          //console.log("Files are not the same")
           return false;
         }
         })
@@ -450,3 +466,15 @@ const { remote } = require('electron')
       e.preventDefault()
       menu.popup({ window: remote.getCurrentWindow() })
     }, false)
+
+
+//Example code for sending data between renderer and main process
+
+/*console.log(ipcRenderer.sendSync('synchronous-message', 'ping')) // prints "pong"
+
+ipcRenderer.on('asynchronous-reply', (event, arg) => {
+  console.log(arg) // prints "pong"
+})
+ipcRenderer.send('asynchronous-message', 'ping')*/
+
+

@@ -6,7 +6,34 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron .",
-    "build": "electron-packager . --out=dist/win --platform=win32 --arch=x64 --icon=./icon.ico --asar=true --overwrite"
+    "buildtest": "electron-packager . --out=dist/win --platform=win32 --arch=x64 --icon=./icon.ico --asar=true --overwrite",
+    "buildwindows": "electron-builder"
+  },
+  "build": {
+    "appId": "com.greentea.editor.app",
+    "productName": "GreenTea",
+    "fileAssociations": [
+      {
+        "ext": [
+          "txt",
+          "md",
+          "gt"
+        ],
+        "name": "Plain Text",
+        "role": "Editor"
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        }
+      ]
+    }
   },
   "author": "",
   "license": "ISC",
@@ -16,6 +43,7 @@
   "dependencies": {
     "bootstrap": "^4.1.3",
     "jquery": "^3.4.1",
+    "node-ipc": "^9.1.1",
     "popper.js": "^1.14.4"
   }
 }

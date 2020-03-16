@@ -7,21 +7,23 @@ A simple, minimalist code editor written in Javascript, HTML and CSS using Elect
 
 ## --🌟--Features and goals for next release--🌟--
 
-  
+
 
 - Check exit-save file on "new file"
-
-- Save user preferences
 
 - Recent files menu
 
 - Better fonts
+
+- Package better for Github, set build scripts up properly to produce presentable isntaller and final product
 
   
 
 ## --🐜--Bugs--🐜--
 
   
+
+- Check why only one instance of GreenTea can be open at once, second window does nto have an editor for some reason
 
 - Check 49 line limit
 
