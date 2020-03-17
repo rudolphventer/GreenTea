@@ -208,6 +208,9 @@ const modelist = [
 "yaml",
 "zeek"
 ]
+
+var recentfiles = []
+
 function createWindow () {
   // Create the browser window.
   const win = new BrowserWindow({
@@ -234,6 +237,33 @@ function createWindow () {
     }
     event.returnValue = data;
   });
+
+  ipcMain.on('recent-files', (event, arg) => {
+    recentfiles = arg;
+    
+    var recents = []
+
+    recentfiles.map( filepath =>
+      {
+        //recents.push({label:filepath})
+        template[0].submenu[2].submenu.push(
+          {
+            label:filepath,
+            click() { 
+              //here is the error, check render ocnsole, apparently all the "/" get removed from path for some reason
+              win.webContents.executeJavaScript('openFile("'+ filepath+'")')
+              .then(result => console.log("success"))
+              .catch(console.log("Error"))
+            }
+          })
+      })
+    
+
+      menu2 = Menu.buildFromTemplate(template)
+      Menu.setApplicationMenu(menu2); 
+      console.log(template[0].submenu[2].submenu)
+      console.log(recents)
+  })
 
   //The main process part of talking to the renderer
   /*
@@ -457,10 +487,9 @@ template.push(
     )
     })
 
-console.log(template[4].submenu[1].click)
-menu2 = Menu.buildFromTemplate(template)
+  
 
-Menu.setApplicationMenu(menu2); 
+
   
 }
 

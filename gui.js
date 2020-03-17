@@ -24,10 +24,21 @@ function start()
     openFile(data);
   }
   //here we send lsit of recent files to main in order to create the list in the menu
-  //ipcRenderer.send('asynchronous-message', 'ping')
+  ipcRenderer.send('recent-files', getRecentFiles())
   
 }
 
+
+function getRecentFiles()
+{
+ if(readFromLocalStorage("recentFiles") != null && openLast)
+  {
+    JSON.parse(readFromLocalStorage("recentFiles")).map(value => recentFiles.push(value))
+    return recentFiles
+  }
+  else
+  return null
+}
 
 function openLastFile()
 {
@@ -40,6 +51,7 @@ function openLastFile()
     openFile(recentFiles[recentFiles.length-1])
   }
 }
+
 function initEditor()
 {
   editor = ace.edit("editor");
@@ -168,6 +180,7 @@ function toggleTerminal()
 
 function openFile(dir)
 {
+  console.log(dir)
   try
   {
     currentFile = dir
@@ -459,8 +472,8 @@ const { remote } = require('electron')
     menu.append(new MenuItem({ role: "cut"}))
     menu.append(new MenuItem({ role: "undo"}))
     menu.append(new MenuItem({ role: "redo"}))
-    menu.append(new MenuItem({ type: 'separator' }))
-    menu.append(new MenuItem({ label: 'MenuItem2', type: 'checkbox', checked: true }))
+    //menu.append(new MenuItem({ type: 'separator' }))
+    //menu.append(new MenuItem({ label: 'MenuItem2', type: 'checkbox', checked: true }))
     
     window.addEventListener('contextmenu', (e) => {
       e.preventDefault()
@@ -470,8 +483,8 @@ const { remote } = require('electron')
 
 //Example code for sending data between renderer and main process
 
-/*console.log(ipcRenderer.sendSync('synchronous-message', 'ping')) // prints "pong"
-
+//console.log(ipcRenderer.sendSync('synchronous-message', 'ping')) // prints "pong"
+/*
 ipcRenderer.on('asynchronous-reply', (event, arg) => {
   console.log(arg) // prints "pong"
 })
