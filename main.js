@@ -1,6 +1,8 @@
 const { app, BrowserWindow, Menu } = require('electron')
 const url=require('url')
 const path=require('path')
+const { ipcMain } = require('electron')
+const fs = require('fs');
 
 const themelist = [
 "clouds",
@@ -225,45 +227,44 @@ function createWindow () {
     frame: true
   })
 
-  const { ipcMain } = require('electron')
-  var fs = require('fs');
+  
+// read the file and send data to the render process
+ipcMain.on('get-file-data', function(event) {
+  var data = null;
+  if (process.platform == 'win32' && process.argv.length >= 2) {
+    var openFilePath = process.argv[1];
+    data = openFilePath;
+  }
+  console.log(data)
+  event.returnValue = data;
+});
 
-  // read the file and send data to the render process
-  ipcMain.on('get-file-data', function(event) {
-    var data = null;
-    if (process.platform == 'win32' && process.argv.length >= 2) {
-      var openFilePath = process.argv[1];
-      data = openFilePath;
-    }
-    event.returnValue = data;
-  });
+ipcMain.on('recent-files', (event, arg) => {
+  recentfiles = arg;
+  template[0].submenu[2].submenu = []
+  recentfiles.map( filepath =>
+    {
+      console.log(filepath)
+      filepath = filepath.replace("\\","\\\\")
+      var testOne = String.raw `${filepath}`
+      console.log(testOne)
+      template[0].submenu[2].submenu.push(
+        {
+          label:filepath,
+          click() { 
+            //here is the error, check render ocnsole, apparently all the "/" get removed from path for some reason
+            win.webContents.executeJavaScript('openFile("'+ filepath +'")')
+            .then(result => console.log("success"))
+            .catch(console.log("Error"))
+          }
+        })
+    })
+  
 
-  ipcMain.on('recent-files', (event, arg) => {
-    recentfiles = arg;
-    
-    var recents = []
-
-    recentfiles.map( filepath =>
-      {
-        //recents.push({label:filepath})
-        template[0].submenu[2].submenu.push(
-          {
-            label:filepath,
-            click() { 
-              //here is the error, check render ocnsole, apparently all the "/" get removed from path for some reason
-              win.webContents.executeJavaScript('openFile("'+ filepath+'")')
-              .then(result => console.log("success"))
-              .catch(console.log("Error"))
-            }
-          })
-      })
-    
-
-      menu2 = Menu.buildFromTemplate(template)
-      Menu.setApplicationMenu(menu2); 
-      console.log(template[0].submenu[2].submenu)
-      console.log(recents)
-  })
+    menu2 = Menu.buildFromTemplate(template)
+    Menu.setApplicationMenu(menu2); 
+})
+  
 
   //The main process part of talking to the renderer
   /*
@@ -320,7 +321,7 @@ function createWindow () {
   }))
 
   // Open the DevTools.
-  //win.webContents.openDevTools()
+  win.webContents.openDevTools()
 
 var template = [];
 template.push(

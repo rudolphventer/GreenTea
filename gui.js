@@ -3,13 +3,16 @@ const { ipcRenderer } = require('electron')
 var currentFile = undefined;
 var language = "txt";
 var terminalVisible = true;
-var recentFiles = []
+var recentFiles = [];
 var openLast = true;
+var fs = require('fs');
+
 function start()
 {
   initEditor();
   showNotification("Drag a file here to start editing")
   //document.getElementById("terminal").textContent = "Microsoft Windows [Version 10.0.18362.657](c)\n2019 Microsoft Corporation. All rights reserved.\nC:\\Users\\Rudolph>"
+  createContextMenu(); //creates context menu on main
 
   ///////////////Until terminal is implemented
   document.getElementById("terminal").style.display = "none";
@@ -18,37 +21,29 @@ function start()
 
   //Here we listen for files being opened in the program, so stuff that is associated and uses greentea as the "default" program to open them or when you right click and click "Open with"
   var data = ipcRenderer.sendSync('get-file-data');
-  if (data ===  null) {
-    openLastFile()
+  recentFiles = JSON.parse(readFromLocalStorage("recentFiles"));
+  console.log(recentFiles)
+  ipcRenderer.send('recent-files', recentFiles)
+
+  openLastFile()
+  /*if (data !=  null && data !="." && fs.existsSync(data)) {
+    console.log(data)
+    openFile(data)
   } else {
-    openFile(data);
-  }
-  //here we send lsit of recent files to main in order to create the list in the menu
-  ipcRenderer.send('recent-files', getRecentFiles())
-  
-}
-
-
-function getRecentFiles()
-{
- if(readFromLocalStorage("recentFiles") != null && openLast)
-  {
-    JSON.parse(readFromLocalStorage("recentFiles")).map(value => recentFiles.push(value))
-    return recentFiles
-  }
-  else
-  return null
+    openLastFile()
+  }*/
 }
 
 function openLastFile()
 {
-  recentFiles.map(filepath => console.log(filepath))
-
-  if(readFromLocalStorage("recentFiles") != null && openLast)
+  console.log()
+  if(JSON.parse(readFromLocalStorage("recentFiles")) != null && recentFiles != null && openLast && recentFiles.length > 0)
   {
-    JSON.parse(readFromLocalStorage("recentFiles")).map(value => recentFiles.push(value))
-    console.log(recentFiles[recentFiles.length-1])
     openFile(recentFiles[recentFiles.length-1])
+  }
+  else
+  {
+    console.log("create new file")
   }
 }
 
@@ -193,6 +188,7 @@ function openFile(dir)
       updateState();
       addToRecentFiles(dir)
     })
+    .catch(err => {console.log(err)})
   }
   catch (err)
   {
@@ -233,7 +229,6 @@ function updateState()
 
 function saveFile()
 {
-  var fs = require('fs');
 
   if(currentFile === undefined)
   {
@@ -460,9 +455,13 @@ function addToRecentFiles(path)
     recentFiles.shift();
   }
     saveToLocalStorage("recentFiles", JSON.stringify(recentFiles));
+  //here we send list of recent files to main in order to create the list in the menu
+  ipcRenderer.send('recent-files', recentFiles)
 }
 
-const { remote } = require('electron')
+function createContextMenu()
+{
+  const { remote } = require('electron')
     const { Menu, MenuItem } = remote
     
     const menu = new Menu()
@@ -479,6 +478,7 @@ const { remote } = require('electron')
       e.preventDefault()
       menu.popup({ window: remote.getCurrentWindow() })
     }, false)
+}
 
 
 //Example code for sending data between renderer and main process
