@@ -13,9 +13,9 @@ A simple, minimalist code editor written in Javascript, HTML and CSS using Elect
 
 - Help file
 
--Control-r disable
+- Control-r disable
 
--Show selected theme and lanugage in menu
+- Show selected theme and lanugage in menu
 
 - Package better for Github, set build scripts up properly to produce presentable isntaller and final product
 
