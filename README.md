@@ -11,11 +11,15 @@ A simple, minimalist code editor written in Javascript, HTML and CSS using Elect
 
 - Check exit-save file on "new file"
 
-- Recent files menu
+- Help file
 
-- Better fonts
+-Control-r disable
+
+-Show selected theme and lanugage in menu
 
 - Package better for Github, set build scripts up properly to produce presentable isntaller and final product
+
+- Toggle "Open last file"
 
   
 
@@ -39,6 +43,8 @@ A simple, minimalist code editor written in Javascript, HTML and CSS using Elect
 
 - Improve filename/dir inidcator
 
+- Remember window position on launch
+
   
 
 ## --📅--Planned Features--📅--
@@ -58,3 +64,5 @@ A simple, minimalist code editor written in Javascript, HTML and CSS using Elect
 - Native context menu, right click menu
 
 - Font selector
+
+- autodetect file extension based on language when saving

@@ -226,6 +226,7 @@ function createWindow () {
     icon: "icon.png",
     frame: true
   })
+  win.maximize()
 
   
 // read the file and send data to the render process
@@ -242,18 +243,20 @@ ipcMain.on('get-file-data', function(event) {
 ipcMain.on('recent-files', (event, arg) => {
   recentfiles = arg;
   template[0].submenu[2].submenu = []
+  if(recentfiles != null)
   recentfiles.map( filepath =>
     {
-      console.log(filepath)
-      filepath = filepath.replace("\\","\\\\")
+      //filepath = filepath.replace("\\","\\\\")
       var testOne = String.raw `${filepath}`
-      console.log(testOne)
+      var testTwo = filepath.replace(/\\/g, "\\\\");
       template[0].submenu[2].submenu.push(
         {
           label:filepath,
           click() { 
             //here is the error, check render ocnsole, apparently all the "/" get removed from path for some reason
-            win.webContents.executeJavaScript('openFile("'+ filepath +'")')
+            console.log(filepath)
+            console.log(testTwo)
+            win.webContents.executeJavaScript('openFile("'+ testTwo +'")')
             .then(result => console.log("success"))
             .catch(console.log("Error"))
           }
@@ -321,7 +324,7 @@ ipcMain.on('recent-files', (event, arg) => {
   }))
 
   // Open the DevTools.
-  win.webContents.openDevTools()
+  //win.webContents.openDevTools()
 
 var template = [];
 template.push(
@@ -418,14 +421,14 @@ template.push(
 {
   label: 'View',
       submenu: [
-        {
+        /*{
           label:'Toggle Terminal',
           click() { 
             win.webContents.executeJavaScript('toggleTerminal()')
           },
           accelerator: 'CmdOrCtrl+T',
-          enabled: false
-      },
+          hidden: true
+      },*/
       { role: 'reload' },
         { role: 'forcereload' },
         { role: 'toggledevtools' },

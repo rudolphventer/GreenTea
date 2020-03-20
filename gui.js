@@ -1,42 +1,47 @@
-var editor;
 const { ipcRenderer } = require('electron')
+const fs = require('fs');
+
+//Var to assign Ace Editor to
+var editor;
+//Initial setup
 var currentFile = undefined;
 var language = "txt";
-var terminalVisible = true;
+var terminalVisible = false;
 var recentFiles = [];
 var openLast = true;
-var fs = require('fs');
+
 
 function start()
 {
   initEditor();
   showNotification("Drag a file here to start editing")
-  //document.getElementById("terminal").textContent = "Microsoft Windows [Version 10.0.18362.657](c)\n2019 Microsoft Corporation. All rights reserved.\nC:\\Users\\Rudolph>"
-  createContextMenu(); //creates context menu on main
+  //Creates right click context menu on main
+  createContextMenu(); 
 
-  ///////////////Until terminal is implemented
+  ///////////////Until terminal is implemented//
   document.getElementById("terminal").style.display = "none";
   document.getElementById("editor").style.height = "100vh";
   //////////////////////////////////////////////
 
   //Here we listen for files being opened in the program, so stuff that is associated and uses greentea as the "default" program to open them or when you right click and click "Open with"
   var data = ipcRenderer.sendSync('get-file-data');
+  //Get list of recent files from localstorage
   recentFiles = JSON.parse(readFromLocalStorage("recentFiles"));
-  console.log(recentFiles)
+  //Send recent files to the main thread to construct the recent files menu
   ipcRenderer.send('recent-files', recentFiles)
 
-  openLastFile()
-  /*if (data !=  null && data !="." && fs.existsSync(data)) {
-    console.log(data)
+  //Checking if the program was opened via a file or as a new instance
+  if (data !=  null && data !="." && fs.existsSync(data)) {
     openFile(data)
   } else {
+    if(openLast)
     openLastFile()
-  }*/
+  }
 }
 
 function openLastFile()
 {
-  console.log()
+  //Get most recent file from localstorage
   if(JSON.parse(readFromLocalStorage("recentFiles")) != null && recentFiles != null && openLast && recentFiles.length > 0)
   {
     openFile(recentFiles[recentFiles.length-1])
@@ -49,23 +54,25 @@ function openLastFile()
 
 function initEditor()
 {
+  //Assign Ace Editor to the variable created in ~line 5
   editor = ace.edit("editor");
-  
-  console.log("theme: ",localStorage.getItem("currentTheme"))
+  //Get theme from localstorage, then set it, if no theme is set default to monokai
   if(readFromLocalStorage("currentTheme") != null)
   {
     setTheme(readFromLocalStorage("currentTheme"))
-    
   }
   else
   {
     editor.setTheme("ace/theme/monokai");
   }
+  //Let us know what theme is selected
+  console.log("Theme: ",localStorage.getItem("currentTheme"))
 
+  //Set default highlighting and remove print margin (because it's not 1990 anymore)
   editor.session.setMode("ace/mode/text");
   editor.setShowPrintMargin(false);
 
-
+  //Get text size from localstorage or default to 11pt
   if(readFromLocalStorage(editorTextSize) != null)
   {
     editorTextSize(readFromLocalStorage(editorTextSize))
@@ -80,18 +87,21 @@ function initEditor()
 
 function setTheme(theme)
 {
+  //Set theme on editor then save current theme to localstorage
   editor.setTheme("ace/theme/"+theme);
   saveToLocalStorage("currentTheme", theme);
 }
 
 function setMode(mode)
 {
+  //Sets highlight language mode in editor and updates state to "refresh" the user's view
   editor.session.setMode("ace/mode/"+mode);
   updateState();
 }
 
 function editorTextSize(sign)
 {
+  //If argument is +, increase size by 2 then save to locaststorage, the same with -, decreases size and saves to localstorage
   if(sign == "+")
   {
     var size = parseInt(editor.getFontSize().slice(0, -2)); 
@@ -116,6 +126,7 @@ function editorTextSize(sign)
       saveToLocalStorage("editorTextSize",size);
     }
   }
+  //If a number is given instead of a + or - then text is set to that size and saved
   else
   if(sign > 0)
   {
@@ -136,6 +147,7 @@ function editorTextSize(sign)
 
 function saveToLocalStorage(name, value)
 {
+  //Simply saves arg 2 as the value for arg 1 in localstorage
   try{
     localStorage.setItem(name, value);
   }
@@ -147,6 +159,7 @@ function saveToLocalStorage(name, value)
 
 function readFromLocalStorage(name)
 {
+  //Attempts to read variable with name "name" from localstorage, returns null if it cannot
   try
   {
   return localStorage.getItem(name);
@@ -154,11 +167,13 @@ function readFromLocalStorage(name)
   catch (err)
   {
     console.log(err);
+    return null;
   }
 }
 
 function toggleTerminal()
 {
+  //Toggles terminal visible, purely with css values
   if(terminalVisible)
   {
     document.getElementById("terminal").style.display = "none";
@@ -175,32 +190,38 @@ function toggleTerminal()
 
 function openFile(dir)
 {
-  console.log(dir)
-  try
-  {
-    currentFile = dir
-    getContents(dir)
-    .then(result => {
-      editor.setValue(result, 1)
-      showNotification(currentFile);
-      language = currentFile.split('.').pop();
-      detectLanguage();
-      updateState();
-      addToRecentFiles(dir)
-    })
-    .catch(err => {console.log(err)})
-  }
-  catch (err)
-  {
-    console.log(err)
-    showNotification("Failed to load file")
-  }
-
+  //Sets currentfile to argument 1 "dir" then calls getcontents() on it
+    try
+    {
+      currentFile = dir
+      getContents(dir)
+      .then(result => {
+        //sets value of editor to data recieved from getContents(), arg 2 specifies that cursor moves to position 1
+        editor.setValue(result, 1)
+        //Shows notification indicating that file has been opened, then gets file extension of file
+        showNotification(currentFile);
+        language = currentFile.split('.').pop();
+        //autodetects file language for syntax highlighting based on file extension
+        detectLanguage();
+        //updates state to refresh user's view
+        updateState();
+        //adds newly opneed file to recent file list
+        addToRecentFiles(dir)
+        console.log("Succesfully opened:",dir)
+      }).catch(err => {console.log(err)})
+    }
+    catch (err)
+    {
+      //In case opening te file failed for some reason
+      console.log(err)
+      showNotification("Failed to load file")
+    }
   
 }
 
 function getContents(dir)
 {
+  //Returns text value of opened file
     return fetch(dir)
             .then(response => 
               {return response.text()})
@@ -213,6 +234,7 @@ function getContents(dir)
 
 function updateState()
 {
+  //If there is a currently opened file get the file name and update document title
   if(currentFile != undefined)
   {
     var mode = editor.session.$modeId;
@@ -221,6 +243,7 @@ function updateState()
   }
   else
   {
+    //Else set document to "New File", only in ui
     var mode = editor.session.$modeId;
     mode = mode.substr(mode.lastIndexOf('/') + 1);
     document.title = "GreenTea - "+"New File" + " - " + mode;
@@ -229,13 +252,14 @@ function updateState()
 
 function saveFile()
 {
-
+  //If you aren't working on an existing file the ncreate a new one and call saveNewFile()
   if(currentFile === undefined)
   {
     saveNewFile();
   }
   else
   {
+    //If you are working on an existing file try to write the current text in the editor to the current file
     try { fs.writeFileSync(currentFile, editor.getValue(), 'utf-8'); 
     console.log("File Saved!")}
     catch(e) { alert('Failed to save the file !'); }
@@ -243,7 +267,7 @@ function saveFile()
   }
 
 }
-
+//
 function saveNewFile()
 {
   const {remote} = require('electron'),
@@ -300,7 +324,7 @@ function showNotification(text)
   var x = document.getElementById("snackbar");
   x.innerHTML = text;
   x.className = "show";
-  setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2000);
+  setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
 }
 
 function detectLanguage()
@@ -444,19 +468,29 @@ function openNewFileUI()
 
 function addToRecentFiles(path)
 {
-  var index = recentFiles.indexOf(path);
- 
-  if (index > -1) {
-     recentFiles.splice(index, 1);
-  }
-    recentFiles.push(path)
-  if(recentFiles.length > 8)
+  if(recentFiles == null)
   {
-    recentFiles.shift();
-  }
+    recentFiles = [];
+    recentFiles[0] = path;
     saveToLocalStorage("recentFiles", JSON.stringify(recentFiles));
-  //here we send list of recent files to main in order to create the list in the menu
+  }
+  else
+  {
+    var index = recentFiles.indexOf(path);
+ 
+    if (index > -1) {
+      recentFiles.splice(index, 1);
+    }
+      recentFiles.push(path)
+    if(recentFiles.length > 8)
+    {
+      recentFiles.shift();
+    }
+      saveToLocalStorage("recentFiles", JSON.stringify(recentFiles));
+    //here we send list of recent files to main in order to create the list in the menu
+  }
   ipcRenderer.send('recent-files', recentFiles)
+  
 }
 
 function createContextMenu()
@@ -471,6 +505,9 @@ function createContextMenu()
     menu.append(new MenuItem({ role: "cut"}))
     menu.append(new MenuItem({ role: "undo"}))
     menu.append(new MenuItem({ role: "redo"}))
+    menu.append(new MenuItem({ role: "delete"}))
+    menu.append(new MenuItem({ role: "selectall"}))
+
     //menu.append(new MenuItem({ type: 'separator' }))
     //menu.append(new MenuItem({ label: 'MenuItem2', type: 'checkbox', checked: true }))
     
