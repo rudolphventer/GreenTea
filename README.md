@@ -11,7 +11,7 @@
 &NewLine;
 &NewLine;
 
-A simple, minimalist code editor written in Javascript, HTML and CSS using Electron and the wonderful Ace editor
+- A simple, minimalist code editor written in Javascript, HTML and CSS using Electron and the wonderful Ace editor
 
   
 
