@@ -13,6 +13,8 @@
 <br/>
 <br/>
 <br/>
+<br/>
+<br/>
 A simple, minimalist code editor written in Javascript, HTML and CSS using Electron and the wonderful Ace editor
 
   
