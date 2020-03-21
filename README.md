@@ -1,7 +1,7 @@
 
 # GreenTea
      
-![]("https://raw.githubusercontent.com/rudolphventer/GreenTea/master/icon.png?token=ABZ6LHMPWATS3SAME4LSDBS6OXQ5M" =150x)
+![]("https://raw.githubusercontent.com/rudolphventer/GreenTea/master/icon.png?token=ABZ6LHMPWATS3SAME4LSDBS6OXQ5M" =150x150)
 
 A simple, minimalist code editor written in Javascript, HTML and CSS using Electron and the wonderful Ace editor
 
