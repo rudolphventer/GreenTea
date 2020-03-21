@@ -1,7 +1,15 @@
 
+
 # GreenTea
 
-<a href="url"><img src="icon.png" align="left" height="100" width="100" ></a>
+<a href="url">
+<img src="icon.png" align="left" height="100" width="100" >
+
+&NewLine;
+&NewLine;
+&NewLine;
+&NewLine;
+&NewLine;
 
 A simple, minimalist code editor written in Javascript, HTML and CSS using Electron and the wonderful Ace editor
 
