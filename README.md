@@ -1,7 +1,8 @@
 
 # GreenTea
-
-![GreenTea](https://raw.githubusercontent.com/rudolphventer/GreenTea/master/icon.png?token=ABZ6LHMPWATS3SAME4LSDBS6OXQ5M)
+<img src="https://raw.githubusercontent.com/rudolphventer/GreenTea/master/icon.png?token=ABZ6LHMPWATS3SAME4LSDBS6OXQ5M"
+     alt="Markdown Monster icon"
+     style="float: left; margin-right: 10px;" />
 
 A simple, minimalist code editor written in Javascript, HTML and CSS using Electron and the wonderful Ace editor
 
