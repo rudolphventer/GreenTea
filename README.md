@@ -4,6 +4,7 @@
 
 <a href="url">
 <img src="icon.png" align="left" height="100" width="100" >
+</a>
 
 &NewLine;
 &NewLine;
