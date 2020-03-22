@@ -1,18 +1,14 @@
 
+<p align="center">
+    <img src="icon.png" alt="GreenTea logo" width="72" height="72">
+</p>
 
-# GreenTea
+<h3 align="center">GreenTea</h3>
 
-<img src="icon.png" align="left" height="100" width="100" >
-
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-
-A simple, minimalist code editor written in Javascript, HTML and CSS using Electron and the wonderful Ace editor
-
+<p align="center">
+  A simple, minimalist code editor written in Javascript, HTML and CSS using Electron and the wonderful Ace editor
+  <br>
+</p>
   
 
 ## --🌟--Features and goals for next release--🌟--
