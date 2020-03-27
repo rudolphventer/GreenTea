@@ -218,18 +218,16 @@ function createWindow () {
   const win = new BrowserWindow({
     title: "GreenTea",
     backgroundColor: "#181818",
-    width: 800,
-    height: 600,
     webPreferences: {
       nodeIntegration: true
     },
-    icon: "icon.png",
+    icon: "icon.ico",
     frame: true
   })
   win.maximize()
 
   
-// read the file and send data to the render process
+// read the file and send data to the render process when GreenTea is opened by clicking an associated file
 ipcMain.on('get-file-data', function(event) {
   var data = null;
   if (process.platform == 'win32' && process.argv.length >= 2) {
@@ -240,6 +238,7 @@ ipcMain.on('get-file-data', function(event) {
   event.returnValue = data;
 });
 
+//populates "recent files" menu under Files menu item
 ipcMain.on('recent-files', (event, arg) => {
   recentfiles = arg;
   template[0].submenu[2].submenu = []
@@ -268,64 +267,74 @@ ipcMain.on('recent-files', (event, arg) => {
     Menu.setApplicationMenu(menu2); 
 })
   
+// Shows dialog before losing changes, notifies user of unsaved changes
+ipcMain.handle('confirm-losing-changes', async (event, someArgument) => {
+  return showConfirmLosingChangesDialog()
+})
 
-  //The main process part of talking to the renderer
-  /*
-  ipcMain.on('asynchronous-message', (event, arg) => {
-    console.log(arg) // prints "ping"
-    event.reply('asynchronous-reply', 'pong')
-  })
-
-  ipcMain.on('synchronous-message', (event, arg) => {
-    console.log(arg) // prints "ping"
-    event.returnValue = 'pong'
-  })*/
-
-  win.on('close', function(e){
-    e.preventDefault();
-    win.webContents.executeJavaScript('compareSaveStateUpToDate()')
-    .then(result =>
+//Checks if all changes to the file have been saved, returns a promise that resolves to true or false
+function showConfirmLosingChangesDialog()
+{
+  return win.webContents.executeJavaScript('compareSaveStateUpToDate()')
+  .then(result =>
+    {
+      if(!result && result !== undefined)
       {
-        if(!result && result !== undefined)
-        {
-          var choice = require('electron').dialog.showMessageBox(win,
-            {
-              type: 'question',
-              buttons: ['Yes', 'No'],
-              title: 'Confirm',
-              message: 'You have unsaved changes, are you sure you want to quit?'
-            });
-          choice.then(function(res){
-              // 0 for Yes
-              if(res.response== 0){
-                win.destroy()
-              }
-              // 1 for No
-              if(res.response== 1){
+        var choice = require('electron').dialog.showMessageBox(win,
+          {
+            type: 'question',
+            buttons: ['Yes', 'No'],
+            title: 'Confirm',
+            message: 'You have unsaved changes, are you sure you want to continue?'
+          });
 
-              }
+         return choice
+         .then(function(res){
+            // 0 for Yes
+            if(res.response== 0){
+              return true;
             }
-          )
-        }
-        else
-        {
-          win.destroy()
-        }
-      })
-    .catch(err => console.log("error",err))
-    });
-  // and load the index.html of the app.
-  win.loadFile('index.html')
+            // 1 for No
+            if(res.response== 1){
+              return false;
+            }
+          }
+        )
+        .catch(err => console.log(err))
+      }
+      else
+      {
+        return true;
+      }
+      
+    })
+  .catch(err => console.log("error",err))
+}
 
-  win.loadURL(url.format({
-    pathname:path.join(__dirname,'index.html'),
-    protocol:'file:',
-    slashes:true
-  }))
+//Calls dialog before closing if unsaved changes are detected
+win.on('close', function(e){
+  e.preventDefault();
+  showConfirmLosingChangesDialog()
+  .then( res =>
+  {
+    if(res)
+    win.destroy();
+  }).catch(err => console.log(err))
+  });
 
-  // Open the DevTools.
-  //win.webContents.openDevTools()
+// load the index.html of the app.
+win.loadFile('index.html')
 
+win.loadURL(url.format({
+  pathname:path.join(__dirname,'index.html'),
+  protocol:'file:',
+  slashes:true
+}))
+
+// Open the DevTools.
+//win.webContents.openDevTools()
+
+//Creates template for menu items, this is done dynamically to allow updating of menu items
 var template = [];
 template.push(
   {
@@ -415,7 +424,16 @@ template.push(
             .catch(console.log("Error"))
           },
           accelerator: 'CmdOrCtrl+Shift+]'
-        }
+        },
+        { label: "Open last file on start",  
+        id: 'open-last-toggle',
+        enabled: true,
+        click() {
+          win.webContents.executeJavaScript('toggleOpenLast()')
+            .then(result => console.log("success"))
+            .catch(console.log("Error"))
+        } 
+ },
   ]
 },
 {
@@ -429,8 +447,6 @@ template.push(
           accelerator: 'CmdOrCtrl+T',
           hidden: true
       },*/
-      { role: 'reload' },
-        { role: 'forcereload' },
         { role: 'toggledevtools' },
         { type: 'separator' },
         { role: 'resetzoom' },
@@ -458,7 +474,7 @@ template.push(
   ]
 }
 )
-
+  //Pushes list of themes to Themes menu
   themelist.map( theme =>
   {
     template[5].submenu.push(
@@ -474,7 +490,7 @@ template.push(
       }
   )
   })
-
+  //Pushes list of modes to Language menu
   modelist.map( mode =>
     {
       template[4].submenu.push(
@@ -490,11 +506,6 @@ template.push(
         }
     )
     })
-
-  
-
-
-  
 }
 
 
@@ -521,5 +532,20 @@ app.on('activate', () => {
   }
 })
 
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
+//////////////////////////Useful snippets
+
+
+////// Render to main and vice versa communication
+
+  //The main process part of talking to the renderer
+  /*
+  ipcMain.on('asynchronous-message', (event, arg) => {
+    console.log(arg) // prints "ping"
+    event.reply('asynchronous-reply', 'pong')
+  })
+
+  ipcMain.on('synchronous-message', (event, arg) => {
+    console.log(arg) // prints "ping"
+    event.returnValue = 'pong'
+  })*/
+

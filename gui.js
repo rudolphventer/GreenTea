@@ -3,12 +3,25 @@ const fs = require('fs');
 
 //Var to assign Ace Editor to
 var editor;
-//Initial setup
+//Initial setup of currentfile
 var currentFile = undefined;
+//lanuage is set as the file extension without the ".", this is used by the detectlanugage fgunction to determine which mode to set the editor to
 var language = "txt";
+//Toggles visibility of terminal
 var terminalVisible = false;
+//array that stores the lst 8 opened files, length-1 = the file opneed by "openLast" option
 var recentFiles = [];
+//Toggles opening the last file you were working on, tru is yes, false is no
 var openLast = true;
+
+var userSettings =
+{
+  "openLast": true,
+  "recentFiles": [],
+  "terminalVisible": false,
+  "theme": "ace/theme/monokai",
+  "editorTextSize": 11
+}
 
 
 function start()
@@ -17,6 +30,7 @@ function start()
   showNotification("Drag a file here to start editing")
   //Creates right click context menu on main
   createContextMenu(); 
+  //readUserSettings();
 
   ///////////////Until terminal is implemented//
   document.getElementById("terminal").style.display = "none";
@@ -39,18 +53,56 @@ function start()
   }
 }
 
-function openLastFile()
+function readUserSettings()
 {
-  //Get most recent file from localstorage
-  if(JSON.parse(readFromLocalStorage("recentFiles")) != null && recentFiles != null && openLast && recentFiles.length > 0)
+  console.log(userSettings.openLast)
+  userSettings = JSON.parse(readFromLocalStorage("userSettings"))
+  console.log(userSettings.openLast)
+}
+
+function toggleOpenLast()
+{
+  //Toggles settig to open last file
+  if(userSettings.hasOwnProperty("openLast"))
   {
-    openFile(recentFiles[recentFiles.length-1])
+      if(userSettings.openLast)
+    {
+      userSettings.openLast = false;
+    }
+    else
+    {
+      userSettings.openLast = true;
+    }
   }
   else
   {
-    console.log("create new file")
+    userSettings.openLast = true
+  }
+  saveToLocalStorage("userSettings", JSON.stringify(userSettings))
+}
+
+function openLastFile()
+{
+  if(fs.existsSync(recentFiles[recentFiles.length-1]))
+  {
+      //check if the recent file value is null/invalid
+      if(recentFiles != null && openLast && recentFiles.length > 0)
+      {
+        //Get most recent file from localstorage
+        if(JSON.parse(readFromLocalStorage("recentFiles")) != null)
+        openFile(recentFiles[recentFiles.length-1])
+      }
+      else
+      {
+        console.log("create new file")
+      }
+  }
+  else
+  {
+    showNotification("Most recent file could not be found")
   }
 }
+
 
 function initEditor()
 {
@@ -190,7 +242,10 @@ function toggleTerminal()
 
 function openFile(dir)
 {
-  //Sets currentfile to argument 1 "dir" then calls getcontents() on it
+  ipcRenderer.invoke('confirm-losing-changes').then((result) => {
+    if(result)
+    {
+      //Sets currentfile to argument 1 "dir" then calls getcontents() on it
     try
     {
       currentFile = dir
@@ -216,8 +271,10 @@ function openFile(dir)
       console.log(err)
       showNotification("Failed to load file")
     }
+    }
   
-}
+  
+})}
 
 function getContents(dir)
 {
@@ -228,7 +285,7 @@ function getContents(dir)
             .catch( error => 
               {
                 console.log(error);
-                showNotification("Could not get contents of ", dir)
+                showNotification("Could not get contents of file ", dir)
               })
 }
 
@@ -276,9 +333,9 @@ function saveNewFile()
 
   let options = {
   title: "Save new file - GreenTea",
-  defaultPath : "C:\\",
   buttonLabel : "Save",
-  filters :[{name: 'All Files', extensions: ['*']}]
+  filters :[{name: 'All Files', extensions: ['*']}],
+  showOverwriteConfirmation : true
   }
 
   //Synchronous
@@ -303,20 +360,30 @@ function saveNewFile()
 
 function createNewFile()
 {
-  try
-  {
-    editor.setValue('')
-    showNotification("New file started")
-    currentFile = undefined;
-    language = "txt";
-    detectLanguage();
-    updateState();
-  }
-  catch (err)
-  {
-    showNotification("Failed to create new file")
-    console.log(err)
-  }
+  //Opens dialog to confirm if there are unsaved changes
+  ipcRenderer.invoke('confirm-losing-changes').then((result) => {
+    if(result)
+    {
+      try
+      {
+        editor.setValue('')
+        showNotification("New file started")
+        currentFile = undefined;
+        language = "txt";
+        detectLanguage();
+        updateState();
+      }
+      catch (err)
+      {
+        showNotification("Failed to create new file")
+        console.log(err)
+      }
+    }
+ 
+  })
+  //console.log("unsaved",unsavedChanges)
+  
+  
 }
 
 function showNotification(text)
@@ -407,7 +474,7 @@ function compareSaveStateUpToDate()
         }
         else
         {
-          //console.log("Files are not the same")
+          //  console.log("Files are not the same")
           return false;
         }
         })

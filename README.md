@@ -30,19 +30,13 @@ Ensure you have the latest version of Node and NPM installed
 
 ## Features and goals for next release
 
-- Check exit-save file on "new file"
-
 - Help file
 
-- Control-r disable
+- Show selected theme and lanugage and toggle "Open last file" in menu
 
-- Show selected theme and lanugage in menu
+- Deleting file causes check if changes on exit to give error notification
 
-- Package better for Github, set build scripts up properly to produce presentable installer and final product
-
-- Toggle "Open last file"
-
-- Clean up dependencies, Bootstrap, Popperjs etc. no longer needed
+- Coding background
 
 ## Enhancements/Improvements
 
