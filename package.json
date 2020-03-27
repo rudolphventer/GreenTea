@@ -3,10 +3,14 @@
   "version": "1.0.0",
   "description": "A simple, minimalist code editor written in Javascript, HTML and CSS using Electron and the wonderful Ace editor",
   "main": "main.js",
-  "author" : "Rudolph Venter <rudolph.rv@gmail.com>",
+  "author": "Rudolph Venter <rudolph.rv@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/rudolphventer/GreenTea"
+  },
   "homepage": "https://github.com/rudolphventer/GreenTea",
   "scripts": {
-    "postinstall":"electron-builder isntall-app-deps",
+    "postinstall": "electron-builder isntall-app-deps",
     "start": "electron .",
     "buildwindows": "electron-builder -w",
     "buildlinux": "electron-builder -l"
@@ -15,15 +19,15 @@
     "appId": "com.greentea.editor.app",
     "productName": "GreenTea",
     "fileAssociations": {
-      "ext":"txt",
+      "ext": "txt",
       "name": "GreenTea File",
       "description": "A plain text file in the GreenTea format",
       "icon": "./icon.ico",
       "role": "Editor"
     },
     "mac": {
-			"category": "public.app-category.development"
-		},
+      "category": "public.app-category.development"
+    },
     "win": {
       "target": [
         {
@@ -35,8 +39,11 @@
         }
       ]
     },
-    "linux":{
-      "target":["appimage", "deb"],
+    "linux": {
+      "target": [
+        "appimage",
+        "deb"
+      ],
       "icon": "./256x256.icns",
       "category": "Development"
     }
