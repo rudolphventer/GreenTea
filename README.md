@@ -34,10 +34,6 @@ Ensure you have the latest version of Node and NPM installed
 
 - Show selected theme and lanugage and toggle "Open last file" in menu
 
-- Deleting file causes check if changes on exit to give error notification
-
-- Coding background
-
 ## Enhancements/Improvements
 
 - Improve popup notification aesthetics
