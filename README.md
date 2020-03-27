@@ -16,11 +16,15 @@ Ensure you have the latest version of Node and NPM installed
 1. Clone the repo or download the zip file and extract it somewhere
 2. Open a terminal there and type ```npm install``` or in Linux ```sudo npm install ```
 3. Then run the appropriate command
-<br>
+
+
 ```npm run start // starts GreenTea```
-<br>
+
+
 ```npm run buildwindows // builds the installer .exe in the /dist folder```
-<br>
+
+
+
 ```npm run buildlinux // builds .deb installer and portable .appimage in /dist folder```
   
 
