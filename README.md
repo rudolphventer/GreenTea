@@ -60,11 +60,7 @@ Ensure you have the latest version of Node and NPM installed
 
 ## Bugs: Windows
 
-- When opening the text editor, if the most recent file is not found then the popup just says "could not find contents of", probably a problem in the getContents() function
-
 - Check why only one instance of GreenTea can be open at once, second window does not have an editor for some reason
-
-- Check 49 line limit
 
 ## Bugs: Linux
 
