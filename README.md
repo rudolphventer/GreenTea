@@ -10,6 +10,12 @@
   <br>
 </p>
 
+## Downloads
+
+- [Windows 64 bit and 32 bit installer](http://www.mediafire.com/file/5e0712erxbpsmpo/GreenTea_Setup_1.0.0.exe/file)
+- [Debian installer (.deb)](http://www.mediafire.com/file/az0l2pnc2d1lnvu/GreenTea_1.0.0_amd64.deb/file)
+- [Appimage (for most Linux distros)](http://www.mediafire.com/file/uqxva1t9xfht6d8/GreenTea-1.0.0.AppImage/file)
+
 ## How to build GreenTea yourself
 
 Ensure you have the latest version of Node and NPM installed
