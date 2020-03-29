@@ -31,7 +31,7 @@ Ensure you have the latest version of Node and NPM installed
 
 
 
-```npm run buildlinux // builds .deb installer and portable .appimage in /dist folder```
+```npm run buildlinux // builds .deb installer and portable .appimage in /dist folder, this will only work on in a Linux environment due to electron-builder```
   
 
 ## Features and goals for next release
