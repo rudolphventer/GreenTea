@@ -36,9 +36,7 @@ Ensure you have the latest version of Node and NPM installed
 
 ## Features and goals for next release
 
-- Help file
-
-- Show selected theme and lanugage and toggle "Open last file" in menu
+- Show selected theme and language
 
 ## Enhancements/Improvements
 
@@ -67,6 +65,8 @@ Ensure you have the latest version of Node and NPM installed
 ## Bugs: Windows
 
 - Check why only one instance of GreenTea can be open at once, second window does not have an editor for some reason
+
+- When opening a file that has been deleted without savign changes to your current file and you click "no" a notification appears telling  you that the file could not be found
 
 ## Bugs: Linux
 

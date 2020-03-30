@@ -1,7 +1,8 @@
 #editor { 
     position: relative;
-    height: 80vh;
-    width: 100%;
+    height: 100%;
+    width: 90%;
+    float: right;
 }
 
 body
@@ -13,6 +14,24 @@ body
 
 textarea {
   resize: none;
+}
+
+#sidebar
+{
+  background-color: grey;
+  border-width: 0px;
+  width: 10%;
+  height: 100vh;
+  color: #fff;
+  float: left;
+  font-family: courier new;
+  border: none;
+  
+  position: block;
+  outline: none !important;
+  border:0px solid;
+  box-shadow: 0 0 0px;
+  font-size: 13px;
 }
 
 .workspace
@@ -65,9 +84,9 @@ textarea {
   #snackbar.show {
     visibility: visible; /* Show the snackbar */
     /* Add animation: Take 0.5 seconds to fade in and out the snackbar.
-    However, delay the fade out process for 2.5 seconds */
+    However, delay the fade out process for 2.5 seconds 
     -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
-    animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    animation: fadein 0.5s, fadeout 0.5s 2.5s;*/
     opacity: 0.8;
   }
   

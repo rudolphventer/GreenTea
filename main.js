@@ -405,38 +405,6 @@ template.push(
   ]
 },
 {
-  label: 'Text',
-      submenu: [
-        {
-          label:'Increase Editor Text Size',
-          click() { 
-            win.webContents.executeJavaScript('editorTextSize("+")')
-            .then(result => console.log("success"))
-            .catch(console.log("Error"))
-          },
-          accelerator: 'CmdOrCtrl+Shift+['
-        },
-        {
-          label:'Decrease Editor Text Size',
-          click() { 
-            win.webContents.executeJavaScript('editorTextSize("-")')
-            .then(result => console.log("success"))
-            .catch(console.log("Error"))
-          },
-          accelerator: 'CmdOrCtrl+Shift+]'
-        },
-        { label: "Open last file on start",  
-        id: 'open-last-toggle',
-        enabled: true,
-        click() {
-          win.webContents.executeJavaScript('toggleOpenLast()')
-            .then(result => console.log("success"))
-            .catch(console.log("Error"))
-        } 
- },
-  ]
-},
-{
   label: 'View',
       submenu: [
         /*{
@@ -457,6 +425,38 @@ template.push(
   ]
 },
 {
+  label: 'Settings',
+      submenu: [
+        {
+          label:'Increase Editor Text Size',
+          click() { 
+            win.webContents.executeJavaScript('editorTextSize("+")')
+            .then(result => console.log("success"))
+            .catch(console.log("Error"))
+          },
+          accelerator: 'CmdOrCtrl+Shift+]'
+        },
+        {
+          label:'Decrease Editor Text Size',
+          click() { 
+            win.webContents.executeJavaScript('editorTextSize("-")')
+            .then(result => console.log("success"))
+            .catch(console.log("Error"))
+          },
+          accelerator: 'CmdOrCtrl+Shift+['
+        },
+        { label: "Open last file on start",  
+        id: 'open-last-toggle',
+        enabled: true,
+        click() {
+          win.webContents.executeJavaScript('toggleOpenLast()')
+            .then(result => console.log("success"))
+            .catch(console.log("Error"))
+        } 
+ },
+  ]
+},
+{
   label: 'Language',
       submenu: [
   ]
@@ -469,7 +469,11 @@ template.push(
   label: 'Help',
       submenu: [
         {
-          label:'TEMP'
+          label:'Help File',
+          click()
+          {
+            require("openurl").open("https://github.com/rudolphventer/GreenTea/blob/master/HelpFile.md")
+          }
       }
   ]
 }
