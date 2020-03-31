@@ -95,9 +95,10 @@
 }
 /* select tree */
 .select-tree .selected {
-  background-color: #beebff;
-  border-color: #99defd;
+  background-color: white;
+  border-color: whitesmoke;
   z-index: 1;
+  border-radius: 3px;
 }
 
 .select-tree.dark .selected {

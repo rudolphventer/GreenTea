@@ -1,5 +1,3 @@
-'use strict';
-
 {
   const Emitter = typeof window.Emitter === 'undefined' ? class Emitter {
     constructor() {

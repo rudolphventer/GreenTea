@@ -38,25 +38,30 @@ Ensure you have the latest version of Node and NPM installed
 
 - Show selected theme and language
 
+- Side panel file browser
+
+- Fix side panel file browser issues (changing folder when child is selected etc.)
+
+- Add buttons like "Up one dir" to file browser
+
+- Expand first level when folder is opened in side panel
+
 ## Enhancements/Improvements
 
 - Improve popup notification aesthetics
 
 - Remember window position on launch
 
+
 ## Planned Features
 
 - Terminal emulator
-
-- Side panel file browser
 
 - On-save commands
 
 - Lanugage autodetect for more languages
 
 - Tabs
-
-- Native context menu, right click menu
 
 - Font selector
 

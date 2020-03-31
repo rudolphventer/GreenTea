@@ -1,7 +1,15 @@
+:root
+  {
+    --sidebar-bg-color: #181818; 
+    --sidebar-text-color: rgb(190, 190, 190);
+    --sidebar-selected-color: #444;
+    --sidebar-ball-color: white;
+  }
+
 #editor { 
     position: relative;
     height: 100%;
-    width: 90%;
+    width: 100%;
     float: right;
 }
 
@@ -16,32 +24,59 @@ textarea {
   resize: none;
 }
 
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: rgba(0,0,0,0); 
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(70, 70, 70, 1); 
+}
+
 #sidebar
 {
-  background-color: grey;
+  padding-top: 5px;
+  background-color: #181818;
   border-width: 0px;
-  width: 10%;
+  width: 10vw;
   height: 100vh;
-  color: #fff;
+  max-width: 20vw;
+  min-width: 10vw;
   float: left;
-  font-family: courier new;
-  border: none;
-  
+  color: rgb(190, 190, 190);
+  padding-left: 5px;
   position: block;
   outline: none !important;
-  border:0px solid;
   box-shadow: 0 0 0px;
   font-size: 13px;
+  resize: horizontal;
+  overflow: auto;
+
+
+}
+
+.editordiv
+{
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .workspace
 {
+  
     height: 100%;
     width: 100%;
     left: 0;
     top: 0;
     
     position: fixed;
+    display: flex;
+    margin: 0px;
 }
 
 .terminal
@@ -53,10 +88,10 @@ textarea {
     color: #fff;
     padding: 8px;
     font-family: courier new;
-    border: none;
-
-    outline: none !important;
-    border:0px solid;
+    resize: vertical;
+    max-height: 30vh;
+    min-height: 10vh;
+    border:1px solid rgb(107, 107, 107);
     box-shadow: 0 0 0px;
     font-size: 13px;
 }
@@ -90,23 +125,47 @@ textarea {
     opacity: 0.8;
   }
   
-  /* Animations to fade the snackbar in and out */
-  @-webkit-keyframes fadein {
-    from {top: 0; opacity: 0;}
-    to {top: 30px; opacity: 1;}
-  }
+
+
+  /*CSS for the file tree veiwer*/
+  /* select tree */
   
-  @keyframes fadein {
-    from {top: 0; opacity: 0;}
-    to {top: 30px; opacity: 1;}
+  .select-tree .selected {
+  background-color: var(--sidebar-text-color);
+  border-color: var(--sidebar-text-color);
+  z-index: 1;
+  border-radius: 5px !important;
   }
-  
-  @-webkit-keyframes fadeout {
-    from {top: 30px; opacity: 1;}
-    to {top: 0; opacity: 0;}
-  }
-  
-  @keyframes fadeout {
-    from {top: 30px; opacity: 1;}
-    to {top: 0; opacity: 0;}
-  } 
+
+.select-tree.dark .selected {
+  border-color: var(--sidebar-text-color) !important;
+  background-color: var(--sidebar-bg-color) !important;
+  border-radius: 5px !important;
+}
+
+.simple-tree.dark details::before,
+.simple-tree.dark details>:not(summary)::before {
+  background-color: var(--sidebar-text-color) !important;
+  background: var(--sidebar-text-color) center center / 5px 5px no-repeat !important;
+  left: -18px !important;
+  top: 2px;
+  width: 10px !important;
+  height: 10px !important;
+  border-radius: 100%;
+  border: var(--sidebar-bg-color) solid 1px;
+}
+
+.simple-tree details>summary::before {
+  background: center center / 5px 5px no-repeat !important;
+  left: -18px !important;
+  top: 2px;
+  width: 10px !important;
+  height: 10px !important;
+  border-radius: 100%;
+  border: var(--sidebar-text-color) solid 1px;
+}
+
+.simple-tree.dark summary {
+  background-color: var(--sidebar-selected-color);
+  border-radius: 5px !important;
+}

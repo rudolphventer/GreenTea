@@ -18,7 +18,8 @@ var defaultSettings =
   "recentFiles": [],
   "terminalVisible": false,
   "theme": "monokai",
-  "editorTextSize": 11
+  "editorTextSize": 11,
+  "fileTreeVisible": true
 }
 
 
@@ -31,10 +32,9 @@ function start()
   //Creates right click context menu on main
   createContextMenu(); 
   showNotification("Drag a file here to start editing")
-  initFileTree()
   ///////////////Until terminal is implemented//
   document.getElementById("terminal").style.display = "none";
-  document.getElementById("editor").style.height = "100vh";
+  //document.getElementById("editor").style.height = "100vh";
   //////////////////////////////////////////////
 
   //Here we listen for files being opened in the program, so files that are associated with Greentea aka uses GreenTea as the "default" program to open them or when you right click and click "Open with"
@@ -48,7 +48,19 @@ function start()
     openFile(data)
   } else {
     if(userSettings.openLast)
+    {
     openLastFile()
+    //getFolder(userSettings.recentFiles[7].substr(0, userSettings.recentFiles[7].lastIndexOf('\\')))
+    }
+  }
+
+  //check if terminal or filetree should be visible
+  if(userSettings.hasOwnProperty("fileTreeVisible"))
+  {
+    if(!userSettings.fileTreeVisible)
+    {
+      document.getElementById("sidebar").style.display = "none";
+    }
   }
 }
 
@@ -128,34 +140,10 @@ function createContextMenu()
     }, false)
 }
 
-function initFileTree()
-{
-  var tree = new Tree(document.getElementById('tree'));
-
-  tree.json([{
-    name: 'file 1'
-  }, {
-    name: 'file 2'
-  }, {
-    name: 'folder 1',
-    open: true,
-    type: Tree.FOLDER,
-    selected: true,
-    children: [{
-      name: 'file 1'
-    }, {
-      name: 'file 2'
-    }, {
-      name: 'folder 1',
-      type: Tree.FOLDER
-    }]
-  }]);
-}
-
 //Code to change settings/modify state of the editor
 function toggleOpenLast()
 {
-  //Toggles settig to open last file
+  //Toggles setting to open last file
   if(userSettings.hasOwnProperty("openLast"))
   {
       if(userSettings.openLast)
@@ -176,19 +164,40 @@ function toggleOpenLast()
   storeUserSettings()
 }
 
+function toggleFileTree()
+{
+  //Toggles setting to show file tree
+  if(userSettings.hasOwnProperty("fileTreeVisible"))
+  {
+      if(userSettings.fileTreeVisible)
+    {
+      userSettings.fileTreeVisible = false;
+      document.getElementById("sidebar").style.display = "none";
+    }
+    else
+    {
+      userSettings.fileTreeVisible = true;
+      document.getElementById("sidebar").style.display = "initial";
+    }
+  }
+  else
+  {
+    userSettings.fileTreeVisible = true
+  }
+  storeUserSettings()
+}
+
 function toggleTerminal()
 {
   //Toggles terminal visible, purely with css values
   if(userSettings.terminalVisible)
   {
     document.getElementById("terminal").style.display = "none";
-    document.getElementById("editor").style.height = "100vh";
     userSettings.terminalVisible = false;
   }
   else
   {
     document.getElementById("terminal").style.display = "initial";
-    document.getElementById("editor").style.height = "80vh";
     userSettings.terminalVisible = true;
   }
   storeUserSettings();
@@ -331,6 +340,14 @@ function openFile(dir)
         updateState();
         //adds newly opneed file to recent file list
         addToRecentFiles(dir)
+        //Clearing the existing file tree because this does not work in the "getFolder" method
+        var filetree = document.getElementById("tree")
+          if(filetree.children.length > 0)
+          {
+            filetree.removeChild(filetree.firstChild)
+          }
+        //updating the Folder tree with the new directory
+        getFolder(dir.substr(0, dir.lastIndexOf('\\')))
         console.log("Succesfully opened:",dir)
       }).catch(err => {console.log(err)})
     }
@@ -602,6 +619,47 @@ function openNewFileUI()
         try
         {
           openFile(result.filePaths[0])
+        }
+        catch (err)
+        {
+          console.log(err)
+        }
+      }
+    })
+  
+
+ }
+
+ function openFolder()
+{
+  const {remote} = require('electron'),
+  dialog = remote.dialog,
+  WIN = remote.getCurrentWindow();  
+
+  let options = {
+    title : "Open folder - GreenTea", 
+    buttonLabel : "Open",
+    properties: ['openDirectory']
+  }
+
+  //Synchronous
+  let filePaths = dialog.showOpenDialog(WIN, options)
+  filePaths.then(result => 
+    {
+      
+    if(!result.canceled)
+      {
+        try
+        {
+          //Clearing the existing file tree because this does not work in the "getFolder" method
+          
+          // this snippet of text appears soemwhere else on this page too, this does prevent you from opening soemthing in a subfolder as it will open the subfolder, discarding the current folder ***fix***
+          var filetree = document.getElementById("tree")
+          if(filetree.children.length > 0)
+          {
+            filetree.removeChild(filetree.firstChild)
+          }
+          getFolder(result.filePaths[0])
         }
         catch (err)
         {

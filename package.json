@@ -54,6 +54,7 @@
     "electron-builder": "^22.4.1"
   },
   "dependencies": {
+    "directory-tree": "^2.2.4",
     "js-treeview": "^1.1.5",
     "node-ipc": "^9.1.1",
     "openurl": "^1.1.1"
