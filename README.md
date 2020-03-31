@@ -42,7 +42,7 @@ Ensure you have the latest version of Node and NPM installed
 
 - Fix side panel file browser issues (changing folder when child is selected etc.)
 
-- Add buttons like "Up one dir" to file browser
+- Add buttons like "Up one dir", "refresh" to file browser
 
 - Expand first level when folder is opened in side panel
 
