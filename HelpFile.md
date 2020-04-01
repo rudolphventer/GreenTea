@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="icon.png" alt="GreenTea logo" width="100" height="100">
+    <img src="resources/icon.png" alt="GreenTea logo" width="100" height="100">
 </p>
 
 <h3 align="center">GreenTea</h3>

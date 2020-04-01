@@ -19,7 +19,8 @@ var defaultSettings =
   "terminalVisible": false,
   "theme": "monokai",
   "editorTextSize": 11,
-  "fileTreeVisible": true
+  "fileTreeVisible": true,
+  "workingDirectory": null
 }
 
 
@@ -27,22 +28,20 @@ var defaultSettings =
 //Basic code to run each time GreenTea is run, "initialization" processes
 function start()
 {
+  //Get user settings object from localstorage
   readUserSettings();
+  //Initial setup for the editor component
   initEditor();
   //Creates right click context menu on main
   createContextMenu(); 
+  //Shows a little notification to let users know the program is ready to use
   showNotification("Drag a file here to start editing")
-  ///////////////Until terminal is implemented//
+  //Until terminal is implemented//
   document.getElementById("terminal").style.display = "none";
-  //document.getElementById("editor").style.height = "100vh";
-  //////////////////////////////////////////////
-
   //Here we listen for files being opened in the program, so files that are associated with Greentea aka uses GreenTea as the "default" program to open them or when you right click and click "Open with"
   var data = ipcRenderer.sendSync('get-file-data');
-
   //Send recent files from userSettings.recentFiles to the main thread to construct the recent files menu
   ipcRenderer.send('recent-files', userSettings.recentFiles)
-
   //Checking if the program was opened via a file or as a new instance
   if (data !=  null && data !="." && fs.existsSync(data)) {
     openFile(data)
@@ -50,10 +49,8 @@ function start()
     if(userSettings.openLast)
     {
     openLastFile()
-    //getFolder(userSettings.recentFiles[7].substr(0, userSettings.recentFiles[7].lastIndexOf('\\')))
     }
   }
-
   //check if terminal or filetree should be visible
   if(userSettings.hasOwnProperty("fileTreeVisible"))
   {
@@ -66,6 +63,7 @@ function start()
 
 function readUserSettings()
 {
+  //Attempt ot get user settings, if the object does not exist or there is some error, create a new settings object with default values
   try
   {
     userSettings = JSON.parse(readFromLocalStorage("userSettings"))
@@ -301,7 +299,7 @@ function openLastFile()
   if(fs.existsSync(userSettings.recentFiles[userSettings.recentFiles.length-1]))
   {
       //check if the recent file value is null/invalid
-      if(userSettings.recentFiles != null && userSettings.openLast && userSettings.recentFiles.length > 0)
+      if(userSettings.recentFiles != null && userSettings.recentFiles.length > 0)
       {
         //Get most recent file from usersettings.recentfiles
         if(userSettings.recentFiles != null)
@@ -340,13 +338,8 @@ function openFile(dir)
         updateState();
         //adds newly opneed file to recent file list
         addToRecentFiles(dir)
-        //Clearing the existing file tree because this does not work in the "getFolder" method
-        var filetree = document.getElementById("tree")
-          if(filetree.children.length > 0)
-          {
-            filetree.removeChild(filetree.firstChild)
-          }
         //updating the Folder tree with the new directory
+        console.log("getting dir", dir)
         getFolder(dir.substr(0, dir.lastIndexOf('\\')))
         console.log("Succesfully opened:",dir)
       }).catch(err => {console.log(err)})
@@ -368,7 +361,8 @@ function openFile(dir)
     }
   
   
-})}
+})
+}
 
 function getContents(dir)
 {
@@ -425,7 +419,7 @@ function saveNewFile()
   const {remote} = require('electron'),
   dialog = remote.dialog,
   WIN = remote.getCurrentWindow();
-
+  //Sets options for the savefile dialog
   let options = {
   title: "Save new file - GreenTea",
   buttonLabel : "Save",
@@ -433,7 +427,7 @@ function saveNewFile()
   showOverwriteConfirmation : true
   }
 
-  //Synchronous
+  //Synchronous, shows dialog then gets the user's selected file path
   let filename = dialog.showSaveDialog(WIN, options)
   filename.then(result =>{
   console.log(result)
@@ -441,6 +435,7 @@ function saveNewFile()
   {
     try
     {
+      //Sets current file to the new path, then saves to create the file, we then open the file once again to ensure that everything has gone as planned
       currentFile = result.filePath;
       saveFile();
       openFile(currentFile);
@@ -461,6 +456,7 @@ function createNewFile()
     {
       try
       {
+        //clear the editor then update the state to reflect a plain text file
         editor.setValue('')
         showNotification("New file started")
         currentFile = undefined;
@@ -493,6 +489,7 @@ function showNotification(text)
 
 function detectLanguage()
 {
+  //uses file extension to determine language mode
   switch(language) {
     case "js":
       setMode("javascript");
@@ -557,6 +554,7 @@ function compareSaveStateUpToDate()
 {
   if(currentFile !== undefined)
   {
+    //get the contents of the current file asyncronously
    return getContents(currentFile)
     .then( contents => 
       {
@@ -564,6 +562,7 @@ function compareSaveStateUpToDate()
       })
       .then(result => 
         {
+          //check if the contents of the editor are the same as the contents of the file
           if(result == editor.getValue())
         {
           //console.log("Files are the same")
@@ -578,6 +577,7 @@ function compareSaveStateUpToDate()
     }
     else
     {
+      //if no file is selected, check if any edits have been made to the editor that the user might want to save
       if(currentFile == undefined && editor.getValue() !== '')
       {
         return false;
@@ -594,13 +594,14 @@ function openNewFileUI()
   WIN = remote.getCurrentWindow();  
   var lastfilepath = ""
   try{
+    //get the path of the last opened file
     lastfilepath = (userSettings.recentFiles[userSettings.recentFiles.length-1]).substring(0, (userSettings.recentFiles[userSettings.recentFiles.length-1]).lastIndexOf("/"))
   }
   catch (err)
   {
     
   }
-
+  //set options for dialog
   let options = {
     title : "Open file - GreenTea", 
     defaultPath : lastfilepath,
@@ -609,7 +610,7 @@ function openNewFileUI()
     properties: ['openFile']
   }
 
-  //Synchronous
+  //Synchronous, open the dialog
   let filePaths = dialog.showOpenDialog(WIN, options)
   filePaths.then(result => 
     {
@@ -618,6 +619,7 @@ function openNewFileUI()
       {
         try
         {
+          //open the selected file
           openFile(result.filePaths[0])
         }
         catch (err)
@@ -630,49 +632,9 @@ function openNewFileUI()
 
  }
 
- function openFolder()
-{
-  const {remote} = require('electron'),
-  dialog = remote.dialog,
-  WIN = remote.getCurrentWindow();  
-
-  let options = {
-    title : "Open folder - GreenTea", 
-    buttonLabel : "Open",
-    properties: ['openDirectory']
-  }
-
-  //Synchronous
-  let filePaths = dialog.showOpenDialog(WIN, options)
-  filePaths.then(result => 
-    {
-      
-    if(!result.canceled)
-      {
-        try
-        {
-          //Clearing the existing file tree because this does not work in the "getFolder" method
-          
-          // this snippet of text appears soemwhere else on this page too, this does prevent you from opening soemthing in a subfolder as it will open the subfolder, discarding the current folder ***fix***
-          var filetree = document.getElementById("tree")
-          if(filetree.children.length > 0)
-          {
-            filetree.removeChild(filetree.firstChild)
-          }
-          getFolder(result.filePaths[0])
-        }
-        catch (err)
-        {
-          console.log(err)
-        }
-      }
-    })
-  
-
-}
-
 function addToRecentFiles(path)
 {
+  //Check if the usersettings object has a .recentfiles attribute, if not create one and add the newly opened file to it
   if(userSettings.recentFiles == null)
   {
     userSettings.recentFiles = [];
@@ -682,18 +644,19 @@ function addToRecentFiles(path)
   else
   {
     var index = userSettings.recentFiles.indexOf(path);
- 
+    
     if (index > -1) {
       userSettings.recentFiles.splice(index, 1);
     }
       userSettings.recentFiles.push(path)
+      //check if there are more than 8 items, if true remove the oldest one
     if(userSettings.recentFiles.length > 8)
     {
       userSettings.recentFiles.shift();
     }
       storeUserSettings();
-    //here we send list of recent files to main in order to create the list in the menu
   }
+  //here we send list of recent files to main in order to create the list in the menu
   ipcRenderer.send('recent-files', userSettings.recentFiles)
   
 }

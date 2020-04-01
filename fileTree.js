@@ -1,19 +1,32 @@
 var structure = [];
 var tree;
+var workingDirectory;
 
 function getFolder(dir)
 {
-  ipcRenderer.invoke('open-folder', dir).then((result) => {
-  structure = [];
-  structure.push(result)
-  tree = new Tree(document.getElementById('tree'), {});
-    //When a file is double clicked
-  tree.on('action', e => openFile(e.node.path));
-    
-  return structure
+  //Checks is new dir is under old dir, if yes then do not change the view
+  if(!dir.includes(workingDirectory))
+  {
+    console.log("getting", dir)
+    //Clearing the existing file tree because this does not work in the "getFolder" method
+    var filetree = document.getElementById("tree")
+    if(filetree.children.length > 0)
+    {
+      filetree.removeChild(filetree.firstChild)
+    }
+    //Sets current dir to new dir
+    workingDirectory = dir;
+    ipcRenderer.invoke('open-folder', dir).then((result) => {
+    structure = [];
+    structure.push(result)
+    tree = new Tree(document.getElementById('tree'), {});
+      //When a file is double clicked
+    tree.on('action', e => openFile(e.node.path));
+    return structure
 }).then(result => {
     createTree(result)
 })
+  }
 }
 
 function createTree(filestructure)
@@ -23,53 +36,42 @@ function createTree(filestructure)
     e.node = node;
   });
   tree.json(filestructure);
+  //Expand the first level of the tree
+  document.getElementById("tree").firstChild.children[1].setAttribute("open", "")
 }
 
+function openFolder()
+{
+  const {remote} = require('electron'),
+  dialog = remote.dialog,
+  WIN = remote.getCurrentWindow();  
 
+  let options = {
+    title : "Open folder - GreenTea", 
+    buttonLabel : "Open",
+    properties: ['openDirectory']
+  }
 
-////////////////////////////////////////////////////////////////////////////////////////////
+  //Synchronous
+  let filePaths = dialog.showOpenDialog(WIN, options)
+  filePaths.then(result => 
+    {
+      
+    if(!result.canceled)
+      {
+        try
+        {
+          //Clearing the existing file tree because this does not work in the "getFolder" method
+          
+          // this snippet of text appears soemwhere else on this page too, this does prevent you from opening soemthing in a subfolder as it will open the subfolder, discarding the current folder ***fix***
+          getFolder(result.filePaths[0])
+        }
+        catch (err)
+        {
+          console.log(err)
+        }
+      }
+    })
+  
 
-/* globals Tree
-'use strict';
-
-var tree = new Tree(document.getElementById('tree'), {
-  navigate: true // allow navigate with ArrowUp and ArrowDown
-});
-tree.on('open', e => console.log('open', e));
-tree.on('select', e => console.log('select', e));
-tree.on('action', e => console.log('action', e));
-tree.on('fetch', e => console.log('fetch', e));
-tree.on('browse', e => console.log('browse', e));
-
-
-
-document.getElementById('browse-1').addEventListener('click', () => {
-  tree.browse(a => {
-    if (a.node.name === 'folder 2 (asynced)' || a.node.name === 'file 2/2') {
-      return true;
-    }
-    return false;
-  });
-});
-
-document.getElementById('browse-2').addEventListener('click', () => {
-  tree.browse(a => {
-    if (a.node.name.startsWith('folder 1') || a.node.name === 'file 1/1/1/1/2') {
-      return true;
-    }
-    return false;
-  });
-});
-
-document.getElementById('unload').addEventListener('click', () => {
-  const d = tree.hierarchy().pop();
-  tree.unloadFolder(d);
-});
-
-document.getElementById('previous').addEventListener('click', () => {
-  tree.navigate('backward');
-});
-document.getElementById('next').addEventListener('click', () => {
-  tree.navigate('forward');
-});
-*/
+}

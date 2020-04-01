@@ -1,6 +1,6 @@
 
 <p align="center">
-    <img src="icon.png" alt="GreenTea logo" width="100" height="100">
+    <img src="resources/icon.png" alt="GreenTea logo" width="100" height="100">
 </p>
 
 <h3 align="center">GreenTea</h3>
@@ -36,21 +36,16 @@ Ensure you have the latest version of Node and NPM installed
 
 ## Features and goals for next release
 
-- Show selected theme and language
-
-- Side panel file browser
-
-- Fix side panel file browser issues (changing folder when child is selected etc.)
-
 - Add buttons like "Up one dir", "refresh" to file browser
 
-- Expand first level when folder is opened in side panel
 
 ## Enhancements/Improvements
 
 - Improve popup notification aesthetics
 
 - Remember window position on launch
+
+- Remember last working directory in file tree, not just folder of current file
 
 
 ## Planned Features

@@ -226,7 +226,7 @@ function createWindow () {
     webPreferences: {
       nodeIntegration: true
     },
-    icon: "icon.ico",
+    icon: "resources/icon.ico",
     frame: true
   })
   win.maximize()
@@ -372,6 +372,14 @@ template.push(
           {
             label:'Recent Files',
             submenu: []
+          },
+          {
+            label:'Open Last File',
+            click() { 
+              win.webContents.executeJavaScript('openLastFile()')
+              .then(result => console.log("success"))
+              .catch(console.log("Error"))
+            }
           },
           {
             label:'Open Folder',

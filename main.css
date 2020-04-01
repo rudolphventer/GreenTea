@@ -169,3 +169,24 @@ textarea {
   background-color: var(--sidebar-selected-color);
   border-radius: 5px !important;
 }
+
+#tree:empty
+{
+  background-image: url("resources/folder_icon.png");
+  background-size: contain;
+  opacity: 0.1;
+  
+  content: "Disable me from the settings menu";
+  background-repeat: no-repeat;
+  align-content: center;
+  margin: 1vw;
+  width: 8vw;
+  height: 8vw;
+
+}
+
+::-webkit-resizer {
+  background-image: url("resources/dots.png");
+  background-size: contain;
+  background-color: var(--sidebar-bg-color);
+}

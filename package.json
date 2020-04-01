@@ -22,7 +22,7 @@
       "ext": "txt",
       "name": "GreenTea File",
       "description": "A plain text file in the GreenTea format",
-      "icon": "./icon.ico",
+      "icon": "./resources/icon.ico",
       "role": "Editor"
     },
     "mac": {
@@ -44,7 +44,7 @@
         "appimage",
         "deb"
       ],
-      "icon": "./256x256.icns",
+      "icon": "./resources/256x256.icns",
       "category": "Development"
     }
   },
