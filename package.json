@@ -18,13 +18,8 @@
   "build": {
     "appId": "com.greentea.editor.app",
     "productName": "GreenTea",
-    "fileAssociations": {
-      "ext": "txt",
-      "name": "GreenTea File",
-      "description": "A plain text file in the GreenTea format",
-      "icon": "resources/icon.ico",
-      "role": "Editor"
-    },
+
+
     "mac": {
       "category": "public.app-category.development"
     },

@@ -41,8 +41,6 @@ Ensure you have the latest version of Node and NPM installed
 
 ## Enhancements/Improvements
 
-- Improve popup notification aesthetics
-
 - Remember window position on launch
 
 - Remember last working directory in file tree, not just folder of current file
@@ -57,8 +55,6 @@ Ensure you have the latest version of Node and NPM installed
 - Lanugage autodetect for more languages
 
 - Tabs
-
-- Font selector
 
 - autodetect file extension based on language when saving
 
