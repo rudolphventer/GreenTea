@@ -28,6 +28,12 @@ textarea {
   width: 12px;
 }
 
+#tree
+{
+  margin-top: 5px;
+  margin-left: 5px;
+}
+
 ::-webkit-scrollbar-track {
   -webkit-box-shadow: rgba(0,0,0,0); 
 }
@@ -38,7 +44,6 @@ textarea {
 
 #sidebar
 {
-  padding-top: 5px;
   background-color: #181818;
   border-width: 0px;
   width: 10vw;
@@ -47,16 +52,40 @@ textarea {
   min-width: 10vw;
   float: left;
   color: rgb(190, 190, 190);
-  padding-left: 5px;
   position: block;
   outline: none !important;
   box-shadow: 0 0 0px;
   font-size: 13px;
   resize: horizontal;
   overflow: auto;
-
-
+  user-select: none;
 }
+
+#controls
+{
+  width: 100%;
+  height: 2vh;
+  top: 0;
+  left: 0;
+  border-bottom: solid;
+  border-color: var(--sidebar-text-color);
+  border-width: 1px;
+  padding-bottom: 0.5vh;
+}
+
+.filetreebutton
+{
+  border:none;
+  font-family: Lucida Sans Unicode;
+  font-size: 1.5vh;
+  cursor: pointer;
+  color: var(--sidebar-text-color);
+  background-color: rgba(255, 255, 255, 0);
+  height: 100%;
+  width: 2vh;
+}
+
+.filetreebutton:focus { outline:0 !important; }
 
 .editordiv
 {
@@ -145,18 +174,17 @@ textarea {
 
 .simple-tree.dark details::before,
 .simple-tree.dark details>:not(summary)::before {
-  background-color: var(--sidebar-text-color) !important;
-  background: var(--sidebar-text-color) center center / 5px 5px no-repeat !important;
+  background: var(--sidebar-bg-color) center center / 5px 5px no-repeat !important;
   left: -18px !important;
   top: 2px;
   width: 10px !important;
   height: 10px !important;
   border-radius: 100%;
-  border: var(--sidebar-bg-color) solid 1px;
+  border: var(--sidebar-text-color) solid 1px;
 }
 
 .simple-tree details>summary::before {
-  background: center center / 5px 5px no-repeat !important;
+  background: var(--sidebar-text-color) center center / 5px 5px no-repeat !important;
   left: -18px !important;
   top: 2px;
   width: 10px !important;

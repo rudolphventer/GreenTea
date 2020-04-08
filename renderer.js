@@ -24,10 +24,17 @@ var defaultSettings =
 }
 
 
+window.addEventListener('DOMContentLoaded', function () {
+  document.getElementById("refresh_button").addEventListener("click", refreshFolder, false);
+  document.getElementById("updir_button").addEventListener("click", upOneDir, false);
+  document.getElementById("clear_button").addEventListener("click", clearFolder, false);
+});
+
 
 //Basic code to run each time GreenTea is run, "initialization" processes
 function start()
 {
+  
   //Get user settings object from localstorage
   readUserSettings();
   //Initial setup for the editor component

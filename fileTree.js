@@ -2,13 +2,37 @@ var structure = [];
 var tree;
 var workingDirectory;
 
+
+
 function getFolder(dir)
 {
   //Checks is new dir is under old dir, if yes then do not change the view
   if(!dir.includes(workingDirectory))
   {
     console.log("getting", dir)
-    //Clearing the existing file tree because this does not work in the "getFolder" method
+    clearFolder()
+    //Sets current dir to new dir
+    workingDirectory = dir;
+    ipcRenderer.invoke('open-folder', dir).then((result) => {
+    structure = [];
+    structure.push(result)
+    tree = new Tree(document.getElementById('tree'), {});
+      //When a file is double clicked
+    tree.on('action', e => openFile(e.node.path));
+    return structure
+}).then(result => {
+    createTree(result)
+})
+  }
+}
+
+function refreshFolder()
+{   console.log(workingDirectory)
+  if(workingDirectory != undefined)
+  {
+    var dir = workingDirectory
+    console.log("getting", dir)
+    //Clearing the existing file tree
     var filetree = document.getElementById("tree")
     if(filetree.children.length > 0)
     {
@@ -23,10 +47,29 @@ function getFolder(dir)
       //When a file is double clicked
     tree.on('action', e => openFile(e.node.path));
     return structure
-}).then(result => {
-    createTree(result)
-})
+    }).then(result => {
+        createTree(result)
+    })
   }
+}
+
+function upOneDir()
+{
+  if(workingDirectory != undefined && workingDirectory != '')
+  {
+    getFolder(workingDirectory.slice(0,workingDirectory.lastIndexOf("\\")))
+  }
+}
+
+function clearFolder()
+{
+  //Clearing the existing file tree
+  var filetree = document.getElementById("tree")
+  if(filetree.children.length > 0)
+  {
+    filetree.removeChild(filetree.firstChild)
+  }
+  workingDirectory = undefined
 }
 
 function createTree(filestructure)
@@ -60,9 +103,7 @@ function openFolder()
     if(!result.canceled)
       {
         try
-        {
-          //Clearing the existing file tree because this does not work in the "getFolder" method
-          
+        {          
           // this snippet of text appears soemwhere else on this page too, this does prevent you from opening soemthing in a subfolder as it will open the subfolder, discarding the current folder ***fix***
           getFolder(result.filePaths[0])
         }
