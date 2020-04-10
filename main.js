@@ -484,6 +484,7 @@ template.push(
         },
         { label: "Toggle File Tree View",  
         enabled: true,
+        accelerator: 'CmdOrCtrl+Shift+T',
         click() {
           win.webContents.executeJavaScript('toggleFileTree()')
             .then(result => console.log("success"))

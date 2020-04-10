@@ -37,7 +37,7 @@ Ensure you have the latest version of Node and NPM installed
 
 ## Features and goals for next release
 
-- Add buttons like "Up one dir", "refresh" to file browser
+- Remove right click menu in sidebar
 
 
 ## Enhancements/Improvements
