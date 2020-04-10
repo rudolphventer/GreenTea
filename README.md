@@ -37,7 +37,9 @@ Ensure you have the latest version of Node and NPM installed
 
 ## Features and goals for next release
 
-- Remove right click menu in sidebar
+- Tab system
+
+- Multiple instances
 
 
 ## Enhancements/Improvements

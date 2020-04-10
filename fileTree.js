@@ -19,6 +19,13 @@ function getFolder(dir)
     tree = new Tree(document.getElementById('tree'), {});
       //When a file is double clicked
     tree.on('action', e => openFile(e.node.path));
+    tree.on('browse', e => console.log('browse', e));
+    /*
+    tree.on('open', e => console.log('open', e));
+    tree.on('select', e => console.log('select', e));
+    tree.on('action', e => console.log('action', e));
+    tree.on('fetch', e => console.log('fetch', e));
+    */
     return structure
 }).then(result => {
     createTree(result)
@@ -27,7 +34,7 @@ function getFolder(dir)
 }
 
 function refreshFolder()
-{   console.log(workingDirectory)
+{   console.log("refresh",workingDirectory)
   if(workingDirectory != undefined)
   {
     var dir = workingDirectory
@@ -55,6 +62,7 @@ function refreshFolder()
 
 function upOneDir()
 {
+  //Move the folder view to the directory one up from the current one
   if(workingDirectory != undefined && workingDirectory != '')
   {
     getFolder(workingDirectory.slice(0,workingDirectory.lastIndexOf("\\")))

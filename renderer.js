@@ -1,4 +1,6 @@
 const { ipcRenderer } = require('electron')
+const {shell} = require('electron')
+const { clipboard } = require('electron')
 const fs = require('fs');
 
 //Var to assign Ace Editor to
@@ -127,7 +129,6 @@ function createContextMenu()
     const { Menu, MenuItem } = remote
     
     const menu = new Menu()
-    //menu.append(new MenuItem({ role: "copy", click() { console.log('item 1 clicked') } }))
     menu.append(new MenuItem({ role: "paste"}))
     menu.append(new MenuItem({ role: "copy"}))
     menu.append(new MenuItem({ role: "cut"}))
@@ -135,13 +136,65 @@ function createContextMenu()
     menu.append(new MenuItem({ role: "redo"}))
     menu.append(new MenuItem({ role: "delete"}))
     menu.append(new MenuItem({ role: "selectall"}))
-
-    //menu.append(new MenuItem({ type: 'separator' }))
-    //menu.append(new MenuItem({ label: 'MenuItem2', type: 'checkbox', checked: true }))
     
-    window.addEventListener('contextmenu', (e) => {
+    document.getElementById("editor").addEventListener('contextmenu', (e) => {
       e.preventDefault()
       menu.popup({ window: remote.getCurrentWindow() })
+    }, false)
+
+    document.getElementById("tree").addEventListener('contextmenu', (e) => {
+      
+      e.preventDefault()
+      if(e.target.node.path != undefined)
+      {
+        const sidebarmenu = new Menu()
+
+      sidebarmenu.append(new MenuItem(
+        {
+        label:'Open',
+        click() { 
+          openFile(e.target.node.path)
+        },
+        }
+      ))
+      sidebarmenu.append(new MenuItem(
+        {
+        label:'Open in file explorer',
+        click() { 
+          var path = e.target.node.path
+          //gets the directory of the file
+          shell.openItem(path.slice(0,path.lastIndexOf("\\")))
+        },
+        }
+      ))
+      sidebarmenu.append(new MenuItem(
+        {
+        label:'Copy path',
+        click() { 
+          var path = e.target.node.path
+          clipboard.writeText(path)
+        },
+        }
+      ))
+      sidebarmenu.append(new MenuItem(
+        {
+        label:'Delete file',
+        click() { 
+          var path = e.target.node.path
+          //uses fs to delete file
+          fs.unlink(path, (err) => {
+            if (err) {
+              console.error(err)
+              return
+            }
+
+            refreshFolder();            
+          })
+        },
+        }
+      ))
+      sidebarmenu.popup({ window: remote.getCurrentWindow() })
+      }
     }, false)
 }
 
@@ -417,6 +470,8 @@ function saveFile()
     console.log("File Saved!")}
     catch(e) { alert('Failed to save the file !'); }
     showNotification("Saved!")
+    //Updating file tree view
+    refreshFolder()
   }
 
 }
@@ -426,18 +481,20 @@ function saveNewFile()
   const {remote} = require('electron'),
   dialog = remote.dialog,
   WIN = remote.getCurrentWindow();
+  var mode = editor.session.$modeId;
+  mode = mode.slice(mode.lastIndexOf('/')+1, mode.length);
+  console.log(mode)
   //Sets options for the savefile dialog
   let options = {
   title: "Save new file - GreenTea",
   buttonLabel : "Save",
-  filters :[{name: 'All Files', extensions: ['*']}],
+  filters :[{name: (mode+"file"), extensions: [language]},{name: 'All Files', extensions: ['*']}],
   showOverwriteConfirmation : true
   }
 
   //Synchronous, shows dialog then gets the user's selected file path
   let filename = dialog.showSaveDialog(WIN, options)
   filename.then(result =>{
-  console.log(result)
   if(!result.canceled)
   {
     try
