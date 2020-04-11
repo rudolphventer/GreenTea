@@ -19,7 +19,7 @@ var defaultSettings =
   "openLast": true,
   "recentFiles": [],
   "terminalVisible": false,
-  "theme": "monokai",
+  "theme": "chaos",
   "editorTextSize": 11,
   "fileTreeVisible": true,
   "workingDirectory": null

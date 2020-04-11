@@ -70,9 +70,9 @@ textarea {
   border-bottom: solid;
   border-color: var(--sidebar-text-color);
   border-width: 1px;
-  padding-right: 10px;
   display: flexbox;
   flex-direction: row;
+  position: sticky;
 
 }
 
