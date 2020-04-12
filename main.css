@@ -47,7 +47,7 @@ textarea {
   background-color: #181818;
   border-width: 0px;
   width: 10vw;
-  height: 100vh;
+  height: 100%;
   max-width: 20vw;
   min-width: 160px;
   float: left;
@@ -57,14 +57,14 @@ textarea {
   box-shadow: 0 0 0px;
   font-size: 13px;
   resize: horizontal;
-  overflow: auto;
+  overflow: scroll;
   user-select: none;
 }
 
 #controls
 {
   width: 100%;
-  height: 20px;
+  height: 15px;
   top: 0;
   left: 0;
   border-bottom: solid;
@@ -73,7 +73,9 @@ textarea {
   display: flexbox;
   flex-direction: row;
   position: sticky;
-
+  padding-bottom: 5px !important;
+  background-color: var(--sidebar-bg-color);
+  z-index: 10;
 }
 
 
@@ -87,7 +89,7 @@ textarea {
   float: left;
   align-self: flex-start;
   margin-left: 5px;
-  margin-top: -7px;
+  line-height: 100%;
 }
 
 .filetreebutton:focus { outline:0 !important; }
@@ -208,13 +210,12 @@ textarea {
   background-image: url("resources/folder_icon.png");
   background-size: contain;
   opacity: 0.1;
-  
-  content: "Disable me from the settings menu";
   background-repeat: no-repeat;
   align-content: center;
   margin: 10px;
   width: 130px;
   height: 130vw;
+  position: absolute;
 
 }
 

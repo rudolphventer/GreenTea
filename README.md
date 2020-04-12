@@ -12,7 +12,7 @@
 
 ## Downloads
 
-Check releases for the newest installers availalbe in the following formats
+Check [releases](https://github.com/rudolphventer/GreenTea/releases) for the newest installers availalbe in the following formats
 - Windows 64 bit and 32 bit installer
 - Debian installer (.deb)
 - Appimage (for most Linux distros)
