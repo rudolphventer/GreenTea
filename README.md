@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-    <img src="resources/readme/demo_1.gif" alt="GreenTea logo" width="480">
+    <img src="resources/readme/demo_1.gif" alt="GreenTea logo" width="800">
 </p>
 
 ## Downloads
