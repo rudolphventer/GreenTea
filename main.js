@@ -3,6 +3,11 @@ const url=require('url')
 const path=require('path')
 const { ipcMain } = require('electron')
 const fs = require('fs');
+const PATH = require('path');
+//file tree things
+const dirTree = require("directory-tree");
+//const tree = dirTree("C:\\Users\\Rudolph\\Desktop");
+//console.log(tree)
 
 const themelist = [
 "clouds",
@@ -221,7 +226,7 @@ function createWindow () {
     webPreferences: {
       nodeIntegration: true
     },
-    icon: "icon.ico",
+    icon: "resources/icon.ico",
     frame: true
   })
   win.maximize()
@@ -237,7 +242,6 @@ ipcMain.on('get-file-data', function(event) {
   console.log(data)
   event.returnValue = data;
 });
-
 //populates "recent files" menu under Files menu item
 ipcMain.on('recent-files', (event, arg) => {
   recentfiles = arg;
@@ -270,6 +274,13 @@ ipcMain.on('recent-files', (event, arg) => {
 // Shows dialog before losing changes, notifies user of unsaved changes
 ipcMain.handle('confirm-losing-changes', async (event, someArgument) => {
   return showConfirmLosingChangesDialog()
+})
+
+ipcMain.handle('open-folder', async (event, dir) => {
+  //This bit replaces the default "type" = "directory" with "type" = "folder" 
+  return  dirTree(dir, {extensions:/$/}, null, (item, PATH, stats) => {
+    item.type = "folder"//Tree.FOLDER
+});
 })
 
 //Checks if all changes to the file have been saved, returns a promise that resolves to true or false
@@ -362,6 +373,22 @@ template.push(
             label:'Recent Files',
             submenu: []
           },
+          {
+            label:'Open Last File',
+            click() { 
+              win.webContents.executeJavaScript('openLastFile()')
+              .then(result => console.log("success"))
+              .catch(console.log("Error"))
+            }
+          },
+          {
+            label:'Open Folder',
+            click() { 
+              win.webContents.executeJavaScript('openFolder()')
+              .then(result => console.log("success"))
+              .catch(console.log("Error"))
+            }
+          },
           { type: 'separator' },
           {
             label:'Save',
@@ -405,38 +432,6 @@ template.push(
   ]
 },
 {
-  label: 'Text',
-      submenu: [
-        {
-          label:'Increase Editor Text Size',
-          click() { 
-            win.webContents.executeJavaScript('editorTextSize("+")')
-            .then(result => console.log("success"))
-            .catch(console.log("Error"))
-          },
-          accelerator: 'CmdOrCtrl+Shift+['
-        },
-        {
-          label:'Decrease Editor Text Size',
-          click() { 
-            win.webContents.executeJavaScript('editorTextSize("-")')
-            .then(result => console.log("success"))
-            .catch(console.log("Error"))
-          },
-          accelerator: 'CmdOrCtrl+Shift+]'
-        },
-        { label: "Open last file on start",  
-        id: 'open-last-toggle',
-        enabled: true,
-        click() {
-          win.webContents.executeJavaScript('toggleOpenLast()')
-            .then(result => console.log("success"))
-            .catch(console.log("Error"))
-        } 
- },
-  ]
-},
-{
   label: 'View',
       submenu: [
         /*{
@@ -457,6 +452,48 @@ template.push(
   ]
 },
 {
+  label: 'Settings',
+      submenu: [
+        {
+          label:'Increase Editor Text Size',
+          click() { 
+            win.webContents.executeJavaScript('editorTextSize("+")')
+            .then(result => console.log("success"))
+            .catch(console.log("Error"))
+          },
+          accelerator: 'CmdOrCtrl+Shift+]'
+        },
+        {
+          label:'Decrease Editor Text Size',
+          click() { 
+            win.webContents.executeJavaScript('editorTextSize("-")')
+            .then(result => console.log("success"))
+            .catch(console.log("Error"))
+          },
+          accelerator: 'CmdOrCtrl+Shift+['
+        },
+        { type: 'separator' },
+        { label: "Open Last File On Start",  
+        id: 'open-last-toggle',
+        enabled: true,
+        click() {
+          win.webContents.executeJavaScript('toggleOpenLast()')
+            .then(result => console.log("success"))
+            .catch(console.log("Error"))
+        } 
+        },
+        { label: "Toggle File Tree View",  
+        enabled: true,
+        accelerator: 'CmdOrCtrl+Shift+T',
+        click() {
+          win.webContents.executeJavaScript('toggleFileTree()')
+            .then(result => console.log("success"))
+            .catch(console.log("Error"))
+        } 
+        },
+  ]
+},
+{
   label: 'Language',
       submenu: [
   ]
@@ -469,7 +506,11 @@ template.push(
   label: 'Help',
       submenu: [
         {
-          label:'TEMP'
+          label:'Help File',
+          click()
+          {
+            require("openurl").open("https://github.com/rudolphventer/GreenTea/blob/master/HelpFile.md")
+          }
       }
   ]
 }

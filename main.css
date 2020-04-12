@@ -1,7 +1,16 @@
+:root
+  {
+    --sidebar-bg-color: #181818; 
+    --sidebar-text-color: rgb(190, 190, 190);
+    --sidebar-selected-color: #444;
+    --sidebar-ball-color: white;
+  }
+
 #editor { 
     position: relative;
-    height: 80vh;
+    height: 100%;
     width: 100%;
+    float: right;
 }
 
 body
@@ -15,14 +24,95 @@ textarea {
   resize: none;
 }
 
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+#tree
+{
+  margin-top: 5px;
+  margin-left: 5px;
+}
+
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: rgba(0,0,0,0); 
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(70, 70, 70, 1); 
+}
+
+#sidebar
+{
+  background-color: #181818;
+  border-width: 0px;
+  width: 10vw;
+  height: 100%;
+  max-width: 20vw;
+  min-width: 160px;
+  float: left;
+  color: rgb(190, 190, 190);
+  position: block;
+  outline: none !important;
+  box-shadow: 0 0 0px;
+  font-size: 13px;
+  resize: horizontal;
+  overflow: scroll;
+  user-select: none;
+}
+
+#controls
+{
+  width: 100%;
+  height: 15px;
+  top: 0;
+  left: 0;
+  border-bottom: solid;
+  border-color: var(--sidebar-text-color);
+  border-width: 1px;
+  display: flexbox;
+  flex-direction: row;
+  position: sticky;
+  padding-bottom: 5px !important;
+  background-color: var(--sidebar-bg-color);
+  z-index: 10;
+}
+
+
+
+.filetreebutton
+{
+  font-family: Consolas,monaco,monospace; 
+  font-size: 22px;
+  cursor: pointer;
+  color: var(--sidebar-text-color);
+  float: left;
+  align-self: flex-start;
+  margin-left: 5px;
+  line-height: 100%;
+}
+
+.filetreebutton:focus { outline:0 !important; }
+
+.editordiv
+{
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
 .workspace
 {
+  
     height: 100%;
     width: 100%;
     left: 0;
     top: 0;
     
     position: fixed;
+    display: flex;
+    margin: 0px;
 }
 
 .terminal
@@ -34,10 +124,10 @@ textarea {
     color: #fff;
     padding: 8px;
     font-family: courier new;
-    border: none;
-
-    outline: none !important;
-    border:0px solid;
+    resize: vertical;
+    max-height: 30vh;
+    min-height: 10vh;
+    border:1px solid rgb(107, 107, 107);
     box-shadow: 0 0 0px;
     font-size: 13px;
 }
@@ -65,29 +155,75 @@ textarea {
   #snackbar.show {
     visibility: visible; /* Show the snackbar */
     /* Add animation: Take 0.5 seconds to fade in and out the snackbar.
-    However, delay the fade out process for 2.5 seconds */
+    However, delay the fade out process for 2.5 seconds 
     -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
-    animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    animation: fadein 0.5s, fadeout 0.5s 2.5s;*/
     opacity: 0.8;
   }
   
-  /* Animations to fade the snackbar in and out */
-  @-webkit-keyframes fadein {
-    from {top: 0; opacity: 0;}
-    to {top: 30px; opacity: 1;}
-  }
+
+
+  /*CSS for the file tree veiwer*/
+  /* select tree */
   
-  @keyframes fadein {
-    from {top: 0; opacity: 0;}
-    to {top: 30px; opacity: 1;}
+  .select-tree .selected {
+  background-color: var(--sidebar-text-color);
+  border-color: var(--sidebar-text-color);
+  z-index: 1;
+  border-radius: 5px !important;
   }
-  
-  @-webkit-keyframes fadeout {
-    from {top: 30px; opacity: 1;}
-    to {top: 0; opacity: 0;}
-  }
-  
-  @keyframes fadeout {
-    from {top: 30px; opacity: 1;}
-    to {top: 0; opacity: 0;}
-  } 
+
+.select-tree.dark .selected {
+  border-color: var(--sidebar-text-color) !important;
+  background-color: var(--sidebar-bg-color) !important;
+  border-radius: 5px !important;
+}
+
+.simple-tree.dark details::before,
+.simple-tree.dark details>:not(summary)::before {
+  background: var(--sidebar-bg-color) center center / 5px 5px no-repeat !important;
+  left: -18px !important;
+  top: 2px;
+  width: 10px !important;
+  height: 10px !important;
+  border-radius: 100%;
+  border: var(--sidebar-text-color) solid 1px;
+}
+
+.simple-tree details>summary::before {
+  background: var(--sidebar-text-color) center center / 5px 5px no-repeat !important;
+  left: -18px !important;
+  top: 2px;
+  width: 10px !important;
+  height: 10px !important;
+  border-radius: 100%;
+  border: var(--sidebar-text-color) solid 1px;
+}
+
+.simple-tree.dark summary {
+  background-color: var(--sidebar-selected-color);
+  border-radius: 5px !important;
+}
+
+#tree:empty
+{
+  background-image: url("resources/folder_icon.png");
+  background-size: contain;
+  opacity: 0.1;
+  background-repeat: no-repeat;
+  align-content: center;
+  margin: 10px;
+  width: 130px;
+  height: 130vw;
+  position: absolute;
+
+}
+
+::-webkit-resizer {
+  background-image: url("resources/dots.png");
+  background-size: contain;
+  background-color: var(--sidebar-bg-color);
+}
+
+/*https://jrgraphix.net/r/Unicode/2600-26FF
+*/

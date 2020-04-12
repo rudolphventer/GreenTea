@@ -1,6 +1,6 @@
 
 <p align="center">
-    <img src="icon.png" alt="GreenTea logo" width="100" height="100">
+    <img src="resources/icon.png" alt="GreenTea logo" width="100" height="100">
 </p>
 
 <h3 align="center">GreenTea</h3>
@@ -10,11 +10,16 @@
   <br>
 </p>
 
+<p align="center">
+    <img src="resources/readme/demo_1.gif" alt="GreenTea logo" width="800">
+</p>
+
 ## Downloads
 
-- [Windows 64 bit and 32 bit installer](http://www.mediafire.com/file/5e0712erxbpsmpo/GreenTea_Setup_1.0.0.exe/file)
-- [Debian installer (.deb)](http://www.mediafire.com/file/az0l2pnc2d1lnvu/GreenTea_1.0.0_amd64.deb/file)
-- [Appimage (for most Linux distros)](http://www.mediafire.com/file/uqxva1t9xfht6d8/GreenTea-1.0.0.AppImage/file)
+Check [releases](https://github.com/rudolphventer/GreenTea/releases) for the newest installers availalbe in the following formats
+- Windows 64 bit and 32 bit installer
+- Debian installer (.deb)
+- Appimage (for most Linux distros)
 
 ## How to build GreenTea yourself
 
@@ -33,24 +38,27 @@ Ensure you have the latest version of Node and NPM installed
 
 ```npm run buildlinux // builds .deb installer and portable .appimage in /dist folder, this will only work on Linux```
   
+<p align="center">
+    <img src="resources/readme/demo_2.gif" alt="GreenTea logo" width="480">
+</p>
 
 ## Features and goals for next release
 
-- Help file
+- Tab system
 
-- Show selected theme and lanugage and toggle "Open last file" in menu
+- Multiple instances
+
 
 ## Enhancements/Improvements
 
-- Improve popup notification aesthetics
-
 - Remember window position on launch
+
+- Remember last working directory in file tree, not just folder of current file
+
 
 ## Planned Features
 
 - Terminal emulator
-
-- Side panel file browser
 
 - On-save commands
 
@@ -58,15 +66,13 @@ Ensure you have the latest version of Node and NPM installed
 
 - Tabs
 
-- Native context menu, right click menu
-
-- Font selector
-
 - autodetect file extension based on language when saving
 
 ## Bugs: Windows
 
 - Check why only one instance of GreenTea can be open at once, second window does not have an editor for some reason
+
+- When opening a file that has been deleted without savign changes to your current file and you click "no" a notification appears telling  you that the file could not be found
 
 ## Bugs: Linux
 

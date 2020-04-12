@@ -18,13 +18,8 @@
   "build": {
     "appId": "com.greentea.editor.app",
     "productName": "GreenTea",
-    "fileAssociations": {
-      "ext": "txt",
-      "name": "GreenTea File",
-      "description": "A plain text file in the GreenTea format",
-      "icon": "./icon.ico",
-      "role": "Editor"
-    },
+
+
     "mac": {
       "category": "public.app-category.development"
     },
@@ -37,14 +32,15 @@
             "ia32"
           ]
         }
-      ]
+      ],
+      "icon": "resources/icon.ico"
     },
     "linux": {
       "target": [
         "appimage",
         "deb"
       ],
-      "icon": "./256x256.icns",
+      "icon": "resources/256x256.icns",
       "category": "Development"
     }
   },
@@ -54,6 +50,10 @@
     "electron-builder": "^22.4.1"
   },
   "dependencies": {
-    "node-ipc": "^9.1.1"
+    "directory-tree": "^2.2.4",
+    "js-treeview": "^1.1.5",
+    "node-ipc": "^9.1.1",
+    "openurl": "^1.1.1"
   }
 }
+  

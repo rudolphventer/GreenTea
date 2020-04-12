@@ -5,8 +5,11 @@
     <title>GreenTea</title>
     <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
     <link rel="stylesheet" href="main.css" crossorigin="anonymous">
+	<link rel="stylesheet" href="./src/treejs/tree.css">
     <script src="./src/src/ace.js" type="text/javascript" charset="utf-8"></script>
-    <script src="gui.js"></script>
+    <script src="renderer.js"></script>
+    <script src="fileTree.js"></script>
+    <script src="./src/treejs/tree.js"></script>
     
     
   
@@ -41,9 +44,21 @@
         })();
     </script>
     <div class="workspace">
-    <div id="editor"></div>
-    <textarea class="terminal" id="terminal" cols="40" rows="5"></textarea>
-    <div id="snackbar"></div>
+        <div id="sidebar">
+            <div id="controls">
+                <div id="updir_button" class="filetreebutton" title="Go up one directory" style="margin-left: 5px !important;" >⊚</div>
+                <div id="clear_button" class="filetreebutton" title="Clear current directory">⊘</div>
+                <div id="refresh_button" class="filetreebutton" style="float: right;" title="Refresh view of current directory">⥀</div>
+                <!--⊕⊖⥀⊘⊚⊙⊝-->
+                
+            </div>
+            <div id="tree" class="simple-tree dark"></div>
+        </div>
+        <div class="editordiv">
+            <div id="editor"></div>
+            <textarea class="terminal" id="terminal" cols="40" rows="5"></textarea>
+        </div>
+        <div id="snackbar"></div>
     </div>
 </body>
 </html>
