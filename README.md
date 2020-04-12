@@ -10,6 +10,10 @@
   <br>
 </p>
 
+<p align="center">
+    <img src="resources/readme/demo_1.gif" alt="GreenTea logo" width="480">
+</p>
+
 ## Downloads
 
 Check [releases](https://github.com/rudolphventer/GreenTea/releases) for the newest installers availalbe in the following formats
@@ -34,6 +38,9 @@ Ensure you have the latest version of Node and NPM installed
 
 ```npm run buildlinux // builds .deb installer and portable .appimage in /dist folder, this will only work on in a Linux environment due to electron-builder```
   
+<p align="center">
+    <img src="resources/readme/demo_2.gif" alt="GreenTea logo" width="480">
+</p>
 
 ## Features and goals for next release
 
