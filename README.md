@@ -48,6 +48,8 @@ Ensure you have the latest version of Node and NPM installed
 
 - Multiple instances
 
+- Fix problem where if a file is deleted while you are working on it, the window will not close
+
 
 ## Enhancements/Improvements
 
