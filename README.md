@@ -72,14 +72,14 @@ Ensure you have the latest version of Node and NPM installed
 
 - Check why only one instance of GreenTea can be open at once, second window does not have an editor for some reason
 
-- When opening a file that has been deleted without savign changes to your current file and you click "no" a notification appears telling  you that the file could not be found
+- When opening a file that has been deleted without saving changes to your current file and you click "no" a notification appears telling  you that the file could not be found
 
 ## Bugs: Linux
 
-- Create new file names file C:/
+- Defualt file names begin with C:/
 
 - File associations broken
 
-- Appimage icons broken
+- Appimage icon broken
 
 - .deb license, description and app store icon broken/unfinished
