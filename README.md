@@ -48,7 +48,7 @@ Ensure you have the latest version of Node and NPM installed
 
 - Multiple instances
 
-- Fix problem where if a file is deleted while you are working on it, the window will not close
+- Fix bug where the window will not close if the file you are working on is deleted.
 
 
 ## Enhancements/Improvements
@@ -64,11 +64,11 @@ Ensure you have the latest version of Node and NPM installed
 
 - On-save commands
 
-- Lanugage autodetect for more languages
+- Language autodetect for more languages
 
 - Tabs
 
-- autodetect file extension based on language when saving
+- Autodetect file extension based on language when saving
 
 ## Bugs: Windows
 
